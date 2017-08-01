@@ -1,0 +1,27 @@
+{
+    "name": "teknasyon/stage",
+    "authors": [
+        {
+            "name": "Ömer ÜCEL",
+            "email": "omerucel@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/yaml": "3.3.5",
+        "symfony/process": "3.3.5",
+        "symfony/console": "3.3.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "Teknasyon": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "Teknasyon": "tests/src"
+        }
+    }
+}

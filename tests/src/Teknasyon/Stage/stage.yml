@@ -1,0 +1,4 @@
+docker_compose_file: docker/docker-compose.yml
+service_name: app
+command: sh /data/project/test.sh
+output_dir: tmp/output
