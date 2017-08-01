@@ -13,8 +13,8 @@ class RunTestCommand extends CommandAbstract implements Command
             '-f',
             $this->build->dockerComposeFile,
             'run',
-            $this->build->projectSetting->serviceName,
-            $this->build->projectSetting->command
+            $this->build->suiteSetting->serviceName,
+            $this->build->suiteSetting->command
         ];
         $process = $this->commandExecutor->execute($cmd);
         if ($process->getExitCode() < 0) {

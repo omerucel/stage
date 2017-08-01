@@ -27,8 +27,8 @@ class RunTestCommandTest extends CommandTestAbstract
                     '-f',
                     $this->build->dockerComposeFile,
                     'run',
-                    $this->build->projectSetting->serviceName,
-                    $this->build->projectSetting->command
+                    $this->build->suiteSetting->serviceName,
+                    $this->build->suiteSetting->command
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);

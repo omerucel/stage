@@ -15,11 +15,8 @@ class BuildTest extends TestCase
         ];
         $environmentSettings = new EnvironmentSetting($settings);
         $projectSettings = ProjectSetting::loadYaml(realpath(__DIR__) . '/stage.yml');
-        $build = new Build($environmentSettings, $projectSettings);
+        $build = new Build($environmentSettings, $projectSettings, $projectSettings->suites['default']);
         $this->assertEquals(32, strlen($build->id));
-        $this->assertEquals('app', $build->projectSetting->serviceName);
-        $this->assertEquals('sh /data/project/test.sh', $build->projectSetting->command);
-        $this->assertEquals(realpath(__DIR__), $build->projectSetting->sourceCodeDir);
         $this->assertEquals('/builds/' . $build->id, $build->buildDir);
         $this->assertEquals('/outputs/' . $build->id, $build->outputDir);
         $this->assertEquals('/builds/' . $build->id . '/docker/docker-compose.yml', $build->dockerComposeFile);

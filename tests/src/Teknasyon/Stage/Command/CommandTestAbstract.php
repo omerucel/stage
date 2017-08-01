@@ -29,7 +29,7 @@ abstract class CommandTestAbstract extends TestCase
             'docker_compose_bin' => '/usr/local/bin/docker-compose'
         ]);
         $projectSetting = ProjectSetting::loadYaml(realpath(dirname(__DIR__)) . '/stage.yml');
-        $this->build = new Build($environmentSetting, $projectSetting);
+        $this->build = new Build($environmentSetting, $projectSetting, $projectSetting->suites['default']);
         $this->commandExecutor = $this->getMockBuilder(CommandExecutor::class)->getMock();
     }
 

@@ -6,21 +6,22 @@ use Symfony\Component\Yaml\Yaml;
 
 class ProjectSetting
 {
-    public $dockerComposeFile;
-    public $serviceName;
-    public $command;
     public $sourceCodeDir;
-    public $outputDir;
+    public $suites = [];
 
     /**
      * @param array $settings
      */
     private function __construct(array $settings = [])
     {
-        $this->dockerComposeFile = $settings['docker_compose_file'] ?? null;
-        $this->serviceName = $settings['service_name'] ?? null;
-        $this->command = $settings['command'] ?? null;
-        $this->outputDir = $settings['output_dir'] ?? null;
+        $suiteNames = array_keys($settings);
+        $defaultSuiteSettings = [];
+        if (isset($settings['default'])) {
+            $defaultSuiteSettings = $settings['default'];
+        }
+        foreach ($suiteNames as $name) {
+            $this->suites[$name] = new SuiteSetting($name, array_merge($defaultSuiteSettings, $settings[$name]));
+        }
     }
 
     /**

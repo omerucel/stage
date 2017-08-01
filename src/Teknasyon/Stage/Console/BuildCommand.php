@@ -17,6 +17,7 @@ use Teknasyon\Stage\Command\StopServicesCommand;
 use Teknasyon\Stage\CommandExecutor;
 use Teknasyon\Stage\EnvironmentSetting;
 use Teknasyon\Stage\ProjectSetting;
+use Teknasyon\Stage\SuiteSetting;
 
 class BuildCommand extends Command
 {
@@ -42,29 +43,8 @@ class BuildCommand extends Command
             'output_dir' => $outputDir
         ]);
         $projectSetting = ProjectSetting::loadYaml($projectDir . '/stage.yml');
-        $build = new Build($environmentSetting, $projectSetting);
-        if ($input->getOption('dry') == true) {
-            $commandExecutor = new class extends CommandExecutor {
-                public function execute(array $args = [])
-                {
-                    echo implode(' ', $args) . PHP_EOL;
-                    $process = new Process($args);
-                    return $process;
-                }
-            };
-        } else {
-            $commandExecutor = new CommandExecutor();
-        }
-        $commands = [
-            new SetupTestCommand($build, $commandExecutor),
-            new StartServicesCommand($build, $commandExecutor),
-            new RunTestCommand($build, $commandExecutor),
-            new StopServicesCommand($build, $commandExecutor),
-            new MoveOutputCommand($build, $commandExecutor),
-            new CleanTestCommand($build, $commandExecutor)
-        ];
-        foreach ($commands as $command) {
-            $command->run();
+        foreach (array_values($projectSetting->suites) as $suite) {
+            $this->build($environmentSetting, $projectSetting, $suite, $input->getOption('dry'));
         }
     }
 
@@ -117,5 +97,37 @@ class BuildCommand extends Command
             throw new \Exception('project-dir ayarı ile belirtilen dizinde(' . $projectDir . ') stage.yml dosyası bulunamadı.');
         }
         return $projectDir;
+    }
+
+    protected function build(
+        EnvironmentSetting $environmentSetting,
+        ProjectSetting $projectSetting,
+        SuiteSetting $suiteSetting,
+        $dry = false
+    ) {
+        $build = new Build($environmentSetting, $projectSetting, $suiteSetting);
+        if ($dry == true) {
+            $commandExecutor = new class extends CommandExecutor {
+                public function execute(array $args = [])
+                {
+                    echo implode(' ', $args) . PHP_EOL;
+                    $process = new Process($args);
+                    return $process;
+                }
+            };
+        } else {
+            $commandExecutor = new CommandExecutor();
+        }
+        $commands = [
+            new SetupTestCommand($build, $commandExecutor),
+            new StartServicesCommand($build, $commandExecutor),
+            new RunTestCommand($build, $commandExecutor),
+            new StopServicesCommand($build, $commandExecutor),
+            new MoveOutputCommand($build, $commandExecutor),
+            new CleanTestCommand($build, $commandExecutor)
+        ];
+        foreach ($commands as $command) {
+            $command->run();
+        }
     }
 }
