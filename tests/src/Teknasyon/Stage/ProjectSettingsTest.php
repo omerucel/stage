@@ -48,7 +48,7 @@ class ProjectSettingsTest extends TestCase
         $this->assertCount(2, $projectSetting->suites);
         $this->assertEquals('Dockerfile.php7', $projectSetting->suites['php7']->dockerfile);
         $this->assertEquals('sh /data/project/test.sh', $projectSetting->suites['php7']->command);
-        $this->assertEquals('tmp/output', $projectSetting->suites['php7']->outputDir);
+        $this->assertEquals(['tmp/output'], $projectSetting->suites['php7']->outputDir);
     }
 
     public function testLoadYml()

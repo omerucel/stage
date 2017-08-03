@@ -23,8 +23,8 @@ class MoveOutputCommandTest extends CommandTestAbstract
                 $expected = [
                     'cp',
                     '-r',
-                    $this->build->getBuildDir() . '/' . $this->build->suiteSetting->outputDir,
-                    $this->build->getOutputDir()
+                    $this->build->getBuildDir() . '/tmp/output',
+                    $this->build->getOutputDir() . '/tmp/output'
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);

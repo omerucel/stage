@@ -20,7 +20,7 @@ class SuiteSettingTest extends TestCase
         $this->assertNotNull($setting->outputDir);
         $this->assertNotNull($setting->command);
         $this->assertEquals('default', $setting->name);
-        $this->assertEquals($settings['output_dir'], $setting->outputDir);
+        $this->assertEquals([$settings['output_dir']], $setting->outputDir);
         $this->assertEquals($settings['command'], $setting->command);
     }
 }

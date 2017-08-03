@@ -2,6 +2,9 @@
 
 namespace Teknasyon\Stage\Command;
 
+use Teknasyon\Stage\Build;
+use Teknasyon\Stage\ProjectSetting;
+
 class SetupTestCommandTest extends CommandTestAbstract
 {
     /**
@@ -52,5 +55,50 @@ class SetupTestCommandTest extends CommandTestAbstract
             });
         $this->expectException(\Exception::class);
         $this->command->run();
+    }
+
+    public function testMultipleOutputDirSupport()
+    {
+        $projectSetting = new ProjectSetting(
+            '/sourcecode',
+            [
+                'default' => [
+                    'docker_compose_file' => 'docker-compose.yml',
+                    'service_name' => 'app',
+                    'command' => 'sh /data/project/test.sh',
+                    'output_dir' => ['tmp/output', 'logs']
+                ]
+            ]
+        );
+        $build = new Build($this->getEnvironmentSetting(), $projectSetting, $projectSetting->suites['default']);
+        $command = new SetupTestCommand($build, $this->commandExecutor);
+        $this->commandExecutor->expects($this->at(0))
+            ->method('execute')
+            ->willReturnCallback(function ($args) {
+                return $this->generateProcessWithExitCode(0);
+            });
+        $this->commandExecutor->expects($this->at(1))
+            ->method('execute')
+            ->willReturnCallback(function ($args) use ($build) {
+                $expected = [
+                    'mkdir',
+                    '-p',
+                    $build->getBuildDir() . '/tmp/output'
+                ];
+                $this->assertEquals($expected, $args);
+                return $this->generateProcessWithExitCode(0);
+            });
+        $this->commandExecutor->expects($this->at(2))
+            ->method('execute')
+            ->willReturnCallback(function ($args) use ($build) {
+                $expected = [
+                    'mkdir',
+                    '-p',
+                    $build->getBuildDir() . '/logs'
+                ];
+                $this->assertEquals($expected, $args);
+                return $this->generateProcessWithExitCode(0);
+            });
+        $command->run();
     }
 }

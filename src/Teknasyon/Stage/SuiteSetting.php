@@ -18,7 +18,10 @@ class SuiteSetting
     protected function __construct($name, array $settings)
     {
         $this->name = $name;
-        $this->outputDir = $settings['output_dir'] ?? null;
+        $this->outputDir = $settings['output_dir'] ?? [];
+        if (is_array($this->outputDir) == false) {
+            $this->outputDir = [$this->outputDir];
+        }
         $this->command = $settings['command'] ?? null;
     }
 
