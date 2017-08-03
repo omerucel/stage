@@ -9,6 +9,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use Teknasyon\Stage\Build;
 use Teknasyon\Stage\Command\CleanTestCommand;
+use Teknasyon\Stage\Command\DockerBuildCommand;
+use Teknasyon\Stage\Command\DockerRunCommand;
+use Teknasyon\Stage\Command\DockerStopCommand;
 use Teknasyon\Stage\Command\MoveOutputCommand;
 use Teknasyon\Stage\Command\RunTestCommand;
 use Teknasyon\Stage\Command\SetupTestCommand;
@@ -17,6 +20,8 @@ use Teknasyon\Stage\Command\StopServicesCommand;
 use Teknasyon\Stage\CommandExecutor;
 use Teknasyon\Stage\EnvironmentSetting;
 use Teknasyon\Stage\ProjectSetting;
+use Teknasyon\Stage\Suite\DockerComposeSuiteSetting;
+use Teknasyon\Stage\Suite\DockerfileSuiteSetting;
 use Teknasyon\Stage\SuiteSetting;
 
 class BuildCommand extends Command
@@ -24,7 +29,8 @@ class BuildCommand extends Command
     protected function configure()
     {
         $this->setName('build')
-            ->addOption('docker-compose-bin', 'db', InputOption::VALUE_REQUIRED, 'docker-compose çalıştırılabilir dosya yolu.')
+            ->addOption('docker-compose-bin', 'dcb', InputOption::VALUE_REQUIRED, 'docker-compose çalıştırılabilir dosya yolu.')
+            ->addOption('docker-bin', 'db', InputOption::VALUE_REQUIRED, 'docker çalıştırılabilir dosya yolu.')
             ->addOption('builds-dir', 'bd', InputOption::VALUE_REQUIRED, 'Testler belirtilen bu dizin içerisinde, teste özel dizin altında çalıştırılır.')
             ->addOption('outputs-dir', 'od', InputOption::VALUE_REQUIRED, 'Teste özel dizin içerisinde yer alan çıktı dosyaları, ilgili dizinle birlikte belirtilen bu dizine kopyalanır.')
             ->addOption('project-dir', 'pd', InputOption::VALUE_REQUIRED, 'Proje kök dizini')
@@ -34,11 +40,13 @@ class BuildCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $dockerComposeBin = $this->getValidatedDockerComposeBin($input);
+        $dockerBin = $this->getValidatedDockerBin($input);
         $buildsDir = $this->getValidatedBuildsDir($input);
         $outputDir = $this->getValidatedOutputsDir($input);
         $projectDir = $this->getValidatedProjectDir($input);
         $environmentSetting = new EnvironmentSetting([
             'docker_compose_bin' => $dockerComposeBin,
+            'docker_bin' => $dockerBin,
             'builds_dir' => $buildsDir,
             'output_dir' => $outputDir
         ]);
@@ -58,6 +66,18 @@ class BuildCommand extends Command
             throw new \Exception('docker-compose-bin ayarı ile belirtilen dosya(' . $dockerComposeBin . ') geçersiz.');
         }
         return $dockerComposeBin;
+    }
+
+    protected function getValidatedDockerBin(InputInterface $input)
+    {
+        $dockerBin = realpath(trim($input->getOption('docker-bin')));
+        if ($dockerBin == null) {
+            throw new \Exception('docker-bin ayarı gerekli.');
+        }
+        if (is_file($dockerBin) == false || is_executable($dockerBin) == false) {
+            throw new \Exception('docker-bin ayarı ile belirtilen dosya(' . $dockerBin . ') geçersiz.');
+        }
+        return $dockerBin;
     }
 
     protected function getValidatedBuildsDir(InputInterface $input)
@@ -118,14 +138,26 @@ class BuildCommand extends Command
         } else {
             $commandExecutor = new CommandExecutor();
         }
-        $commands = [
-            new SetupTestCommand($build, $commandExecutor),
-            new StartServicesCommand($build, $commandExecutor),
-            new RunTestCommand($build, $commandExecutor),
-            new StopServicesCommand($build, $commandExecutor),
-            new MoveOutputCommand($build, $commandExecutor),
-            new CleanTestCommand($build, $commandExecutor)
-        ];
+        $commands = [];
+        if ($suiteSetting instanceof DockerComposeSuiteSetting) {
+            $commands = [
+                new SetupTestCommand($build, $commandExecutor),
+                new StartServicesCommand($build, $commandExecutor),
+                new RunTestCommand($build, $commandExecutor),
+                new StopServicesCommand($build, $commandExecutor),
+                new MoveOutputCommand($build, $commandExecutor),
+                new CleanTestCommand($build, $commandExecutor)
+            ];
+        } elseif ($suiteSetting instanceof DockerfileSuiteSetting) {
+            $commands = [
+                new SetupTestCommand($build, $commandExecutor),
+                new DockerBuildCommand($build, $commandExecutor),
+                new DockerRunCommand($build, $commandExecutor),
+                new DockerStopCommand($build, $commandExecutor),
+                new MoveOutputCommand($build, $commandExecutor),
+                new CleanTestCommand($build, $commandExecutor)
+            ];
+        }
         foreach ($commands as $command) {
             $command->run();
         }

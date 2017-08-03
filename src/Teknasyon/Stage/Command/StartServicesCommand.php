@@ -9,9 +9,9 @@ class StartServicesCommand extends CommandAbstract implements Command
         $args = [
             $this->build->environmentSetting->dockerComposeBin,
             '-p',
-            $this->build->id,
+            $this->build->getGeneratedId(),
             '-f',
-            $this->build->dockerComposeFile,
+            $this->build->getBuildDir() . '/' . $this->build->suiteSetting->dockerComposeFile,
             'up',
             '-d',
             '--build'

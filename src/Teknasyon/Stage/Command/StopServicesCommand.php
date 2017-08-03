@@ -9,9 +9,9 @@ class StopServicesCommand extends CommandAbstract implements Command
         $cmd = [
             $this->build->environmentSetting->dockerComposeBin,
             '-p',
-            $this->build->id,
+            $this->build->getGeneratedId(),
             '-f',
-            $this->build->dockerComposeFile,
+            $this->build->getBuildDir() . '/' . $this->build->suiteSetting->dockerComposeFile,
             'rm',
             '--force',
             '--stop'

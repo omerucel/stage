@@ -10,7 +10,7 @@ class SetupTestCommand extends CommandAbstract implements Command
             'cp',
             '-r',
             $this->build->projectSetting->sourceCodeDir,
-            $this->build->buildDir
+            $this->build->getBuildDir()
         ];
         $process = $this->commandExecutor->execute($cmd);
         if ($process->getExitCode() < 0) {

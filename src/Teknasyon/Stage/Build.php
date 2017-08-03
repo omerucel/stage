@@ -22,22 +22,7 @@ class Build
     /**
      * @var string
      */
-    public $id;
-
-    /**
-     * @var string
-     */
-    public $buildDir;
-
-    /**
-     * @var string
-     */
-    public $dockerComposeFile;
-
-    /**
-     * @var string
-     */
-    public $outputDir;
+    protected $id;
 
     /**
      * @param EnvironmentSetting $environmentSetting
@@ -52,9 +37,32 @@ class Build
         $this->environmentSetting = $environmentSetting;
         $this->projectSetting = $projectSetting;
         $this->suiteSetting = $suiteSetting;
-        $this->id = md5(uniqid(time() . getmypid()));
-        $this->buildDir = $this->environmentSetting->buildsDir . '/' . $this->id;
-        $this->outputDir = $this->environmentSetting->outputDir . '/' . $this->id;
-        $this->dockerComposeFile = $this->buildDir . '/' . $suiteSetting->dockerComposeFile;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBuildDir()
+    {
+        return $this->environmentSetting->buildsDir . '/' . $this->getGeneratedId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getOutputDir()
+    {
+        return $this->environmentSetting->outputDir . '/' . $this->getGeneratedId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getGeneratedId()
+    {
+        if ($this->id == null) {
+            $this->id = md5(uniqid(time() . getmypid()));
+        }
+        return $this->id;
     }
 }

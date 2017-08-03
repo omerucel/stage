@@ -9,7 +9,7 @@ class CleanTestCommand extends CommandAbstract implements Command
         $cmd = [
             'rm',
             '-rf',
-            $this->build->buildDir
+            $this->build->getBuildDir()
         ];
         $process = $this->commandExecutor->execute($cmd);
         if ($process->getExitCode() < 0) {

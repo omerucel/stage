@@ -23,12 +23,12 @@ class RunTestCommandTest extends CommandTestAbstract
                 $expected = [
                     '/usr/local/bin/docker-compose',
                     '-p',
-                    $this->build->id,
+                    $this->build->getGeneratedId(),
                     '-f',
-                    $this->build->dockerComposeFile,
+                    $this->build->getBuildDir() . '/docker-compose.yml',
                     'run',
-                    $this->build->suiteSetting->serviceName,
-                    $this->build->suiteSetting->command
+                    'app',
+                    'sh /data/project/test.sh'
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);

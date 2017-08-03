@@ -9,8 +9,8 @@ class MoveOutputCommand extends CommandAbstract implements Command
         $cmd = [
             'cp',
             '-r',
-            $this->build->buildDir . '/' . $this->build->suiteSetting->outputDir,
-            $this->build->outputDir,
+            $this->build->getBuildDir() . '/' . $this->build->suiteSetting->outputDir,
+            $this->build->getOutputDir(),
         ];
         $process = $this->commandExecutor->execute($cmd);
         if ($process->getExitCode() < 0) {

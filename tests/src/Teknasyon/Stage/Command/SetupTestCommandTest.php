@@ -23,8 +23,8 @@ class SetupTestCommandTest extends CommandTestAbstract
                 $expected = [
                     'cp',
                     '-r',
-                    $this->build->projectSetting->sourceCodeDir,
-                    $this->build->buildDir
+                    '/sourcecode',
+                    $this->build->getBuildDir()
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);

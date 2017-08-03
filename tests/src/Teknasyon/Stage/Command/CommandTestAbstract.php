@@ -23,13 +23,18 @@ abstract class CommandTestAbstract extends TestCase
 
     protected function setUp()
     {
-        $environmentSetting = new EnvironmentSetting([
-            'builds_dir' => '/builds',
-            'output_dir' => '/outputs',
-            'docker_compose_bin' => '/usr/local/bin/docker-compose'
-        ]);
-        $projectSetting = ProjectSetting::loadYaml(realpath(dirname(__DIR__)) . '/stage.yml');
-        $this->build = new Build($environmentSetting, $projectSetting, $projectSetting->suites['default']);
+        $projectSetting = new ProjectSetting(
+            '/sourcecode',
+            [
+                'default' => [
+                    'docker_compose_file' => 'docker-compose.yml',
+                    'service_name' => 'app',
+                    'command' => 'sh /data/project/test.sh',
+                    'output_dir' => 'tmp/output'
+                ]
+            ]
+        );
+        $this->build = new Build($this->getEnvironmentSetting(), $projectSetting, $projectSetting->suites['default']);
         $this->commandExecutor = $this->getMockBuilder(CommandExecutor::class)->getMock();
     }
 
@@ -46,5 +51,18 @@ abstract class CommandTestAbstract extends TestCase
             ->method('getExitCode')
             ->willReturn($exitCode);
         return $process;
+    }
+
+    /**
+     * @return EnvironmentSetting
+     */
+    protected function getEnvironmentSetting()
+    {
+        return new EnvironmentSetting([
+            'builds_dir' => '/builds',
+            'output_dir' => '/outputs',
+            'docker_compose_bin' => '/usr/local/bin/docker-compose',
+            'docker_bin' => '/usr/local/bin/docker'
+        ]);
     }
 }

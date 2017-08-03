@@ -23,7 +23,7 @@ class CleanTestCommandTest extends CommandTestAbstract
                 $expected = [
                     'rm',
                     '-rf',
-                    $this->build->buildDir
+                    $this->build->getBuildDir()
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);

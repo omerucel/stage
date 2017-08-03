@@ -24,9 +24,9 @@ class StartServicesCommandTest extends CommandTestAbstract
                 $expected = [
                     '/usr/local/bin/docker-compose',
                     '-p',
-                    $this->build->id,
+                    $this->build->getGeneratedId(),
                     '-f',
-                    $this->build->dockerComposeFile,
+                    $this->build->getBuildDir() . '/docker-compose.yml',
                     'up',
                     '-d',
                     '--build'

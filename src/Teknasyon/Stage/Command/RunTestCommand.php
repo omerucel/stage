@@ -9,9 +9,9 @@ class RunTestCommand extends CommandAbstract implements Command
         $cmd = [
             $this->build->environmentSetting->dockerComposeBin,
             '-p',
-            $this->build->id,
+            $this->build->getGeneratedId(),
             '-f',
-            $this->build->dockerComposeFile,
+            $this->build->getBuildDir() . '/' . $this->build->suiteSetting->dockerComposeFile,
             'run',
             $this->build->suiteSetting->serviceName,
             $this->build->suiteSetting->command

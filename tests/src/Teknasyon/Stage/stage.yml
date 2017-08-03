@@ -1,8 +1,10 @@
-default:
-  docker_compose_file: docker/docker-compose.yml
-  service_name: app
-  command: sh /data/project/test.sh
-  output_dir: tmp/output
+dockerfile:
+    dockerfile: Dockerfile
+    command: sh /app/test.sh
+    output_dir: var/output
 
-php7:
-  docker_compose_file: docker/docker-compose.php7.yml
+dockercompose:
+    docker_compose_file: docker-compose.yml
+    service_name: app
+    command: sh /data/project/test.sh
+    output_dir: var/output

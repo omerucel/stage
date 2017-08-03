@@ -2,11 +2,12 @@
 
 namespace Teknasyon\Stage;
 
+use Teknasyon\Stage\Suite\DockerComposeSuiteSetting;
+use Teknasyon\Stage\Suite\DockerfileSuiteSetting;
+
 class SuiteSetting
 {
     public $name;
-    public $dockerComposeFile;
-    public $serviceName;
     public $outputDir;
     public $command;
 
@@ -14,12 +15,25 @@ class SuiteSetting
      * @param $name
      * @param array $settings
      */
-    public function __construct($name, array $settings)
+    protected function __construct($name, array $settings)
     {
         $this->name = $name;
-        $this->dockerComposeFile = $settings['docker_compose_file'] ?? null;
-        $this->serviceName = $settings['service_name'] ?? null;
         $this->outputDir = $settings['output_dir'] ?? null;
         $this->command = $settings['command'] ?? null;
+    }
+
+    /**
+     * @param $name
+     * @param array $settings
+     * @return SuiteSetting
+     */
+    public static function factory($name, array $settings)
+    {
+        if (isset($settings['docker_compose_file'])) {
+            $class = DockerComposeSuiteSetting::class;
+        } elseif ($settings['dockerfile']) {
+            $class = DockerfileSuiteSetting::class;
+        }
+        return new $class($name, $settings);
     }
 }
