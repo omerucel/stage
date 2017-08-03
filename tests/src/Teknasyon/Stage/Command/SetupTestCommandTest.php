@@ -17,7 +17,7 @@ class SetupTestCommandTest extends CommandTestAbstract
 
     public function testRun()
     {
-        $this->commandExecutor->expects($this->any())
+        $this->commandExecutor->expects($this->at(0))
             ->method('execute')
             ->willReturnCallback(function ($args) {
                 $expected = [
@@ -29,12 +29,23 @@ class SetupTestCommandTest extends CommandTestAbstract
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
             });
+        $this->commandExecutor->expects($this->at(1))
+            ->method('execute')
+            ->willReturnCallback(function ($args) {
+                $expected = [
+                    'mkdir',
+                    '-p',
+                    $this->build->getBuildDir() . '/tmp/output'
+                ];
+                $this->assertEquals($expected, $args);
+                return $this->generateProcessWithExitCode(0);
+            });
         $this->command->run();
     }
 
     public function testExitCode()
     {
-        $this->commandExecutor->expects($this->any())
+        $this->commandExecutor->expects($this->at(0))
             ->method('execute')
             ->willReturnCallback(function () {
                 return $this->generateProcessWithExitCode(-1);
