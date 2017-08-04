@@ -9,8 +9,10 @@ use Teknasyon\Stage\CommandExecutor;
 use Teknasyon\Stage\EnvironmentSetting;
 use Teknasyon\Stage\Suite\DockerComposeSuite;
 use Teknasyon\Stage\Suite\DockerfileSuite;
+use Teknasyon\Stage\Suite\DockerImageSuite;
 use Teknasyon\Stage\SuiteSetting\DockerComposeSuiteSetting;
 use Teknasyon\Stage\SuiteSetting\DockerfileSuiteSetting;
+use Teknasyon\Stage\SuiteSetting\DockerImageSuiteSetting;
 
 abstract class CommandTestAbstract extends TestCase
 {
@@ -67,6 +69,22 @@ abstract class CommandTestAbstract extends TestCase
             'output_dir' => ['tmp/output', 'logs']
         ]);
         return new DockerfileSuite($this->getContainer(), $suiteSetting);
+    }
+
+    /**
+     * @return DockerImageSuite
+     */
+    protected function getDockerImageSuite()
+    {
+        $suiteSetting = new DockerImageSuiteSetting('suitename', [
+            'type' => 'Dockerfile',
+            'dockerimage' => 'imagename',
+            'source_code_dir' => '/sourcecode',
+            'source_code_target' => '/app',
+            'command' => 'sh /app/test.sh',
+            'output_dir' => ['tmp/output', 'logs']
+        ]);
+        return new DockerImageSuite($this->getContainer(), $suiteSetting);
     }
 
     /**

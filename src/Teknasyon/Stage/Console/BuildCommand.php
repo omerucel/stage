@@ -11,6 +11,7 @@ use Symfony\Component\Process\Process;
 use Teknasyon\Stage\Command\CleanBuildCommand;
 use Teknasyon\Stage\Command\DockerBuildCommand;
 use Teknasyon\Stage\Command\DockerRunCommand;
+use Teknasyon\Stage\Command\DockerRunImageCommand;
 use Teknasyon\Stage\Command\DockerStopCommand;
 use Teknasyon\Stage\Command\MoveOutputCommand;
 use Teknasyon\Stage\Command\DockerComposeRunCommand;
@@ -22,6 +23,7 @@ use Teknasyon\Stage\EnvironmentSetting;
 use Teknasyon\Stage\Factory\ContainerFactory;
 use Teknasyon\Stage\Suite\DockerComposeSuite;
 use Teknasyon\Stage\Suite\DockerfileSuite;
+use Teknasyon\Stage\Suite\DockerImageSuite;
 use Teknasyon\Stage\SuiteFactory;
 use Teknasyon\Stage\SuiteSetting\SuiteSetting;
 use Teknasyon\Stage\SuiteSettingParser;
@@ -155,6 +157,13 @@ class BuildCommand extends Command
                 $container->get(DockerBuildCommand::class),
                 $container->get(DockerRunCommand::class),
                 $container->get(DockerStopCommand::class),
+                $container->get(MoveOutputCommand::class),
+                $container->get(CleanBuildCommand::class)
+            ];
+        } elseif ($suite instanceof DockerImageSuite) {
+            $commands = [
+                $container->get(SetupBuildCommand::class),
+                $container->get(DockerRunImageCommand::class),
                 $container->get(MoveOutputCommand::class),
                 $container->get(CleanBuildCommand::class)
             ];
