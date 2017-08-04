@@ -2,12 +2,15 @@
 
 namespace Teknasyon\Stage\Command;
 
+use DI\ContainerBuilder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\Process;
-use Teknasyon\Stage\Build;
 use Teknasyon\Stage\CommandExecutor;
 use Teknasyon\Stage\EnvironmentSetting;
-use Teknasyon\Stage\ProjectSetting;
+use Teknasyon\Stage\Suite\DockerComposeSuite;
+use Teknasyon\Stage\Suite\DockerfileSuite;
+use Teknasyon\Stage\SuiteSetting\DockerComposeSuiteSetting;
+use Teknasyon\Stage\SuiteSetting\DockerfileSuiteSetting;
 
 abstract class CommandTestAbstract extends TestCase
 {
@@ -35,59 +38,50 @@ abstract class CommandTestAbstract extends TestCase
     }
 
     /**
-     * @return Build
+     * @return DockerComposeSuite
      */
-    protected function getDockerComposeBuild()
+    protected function getDockerComposeSuite()
     {
-        $projectSetting = $this->getProjectSetting();
-        return new Build($this->getEnvironmentSetting(), $projectSetting, $projectSetting->suites['dockercompose']);
+        $suiteSetting = new DockerComposeSuiteSetting('suitename', [
+            'type' => 'DockerCompose',
+            'docker_compose_file' => 'docker-compose.yml',
+            'source_code_dir' => '/sourcecode',
+            'service_name' => 'app',
+            'command' => 'sh /data/project/test.sh',
+            'output_dir' => ['tmp/output', 'logs']
+        ]);
+        return new DockerComposeSuite($this->getContainer(), $suiteSetting);
     }
 
     /**
-     * @return Build
+     * @return DockerfileSuite
      */
-    protected function getDockerfileBuild()
+    protected function getDockerfileSuite()
     {
-        $projectSetting = $this->getProjectSetting();
-        return new Build($this->getEnvironmentSetting(), $projectSetting, $projectSetting->suites['dockerfile']);
+        $suiteSetting = new DockerfileSuiteSetting('suitename', [
+            'type' => 'Dockerfile',
+            'dockerfile' => 'Dockerfile',
+            'source_code_dir' => '/sourcecode',
+            'source_code_target' => '/app',
+            'command' => 'sh /app/test.sh',
+            'output_dir' => ['tmp/output', 'logs']
+        ]);
+        return new DockerfileSuite($this->getContainer(), $suiteSetting);
     }
 
     /**
-     * @return EnvironmentSetting
+     * @return \DI\Container
      */
-    protected function getEnvironmentSetting()
+    protected function getContainer()
     {
-        return new EnvironmentSetting([
+        $environmentSetting = new EnvironmentSetting([
             'builds_dir' => '/builds',
             'output_dir' => '/outputs',
             'docker_compose_bin' => '/usr/local/bin/docker-compose',
             'docker_bin' => '/usr/local/bin/docker'
         ]);
-    }
-
-    /**
-     * @return ProjectSetting
-     */
-    protected function getProjectSetting()
-    {
-        return new ProjectSetting(
-            '/sourcecode',
-            [
-                'dockercompose' => [
-                    'type' => 'DockerCompose',
-                    'docker_compose_file' => 'docker-compose.yml',
-                    'service_name' => 'app',
-                    'command' => 'sh /data/project/test.sh',
-                    'output_dir' => ['tmp/output', 'logs']
-                ],
-                'dockerfile' => [
-                    'type' => 'Dockerfile',
-                    'dockerfile' => 'Dockerfile',
-                    'source_code_target' => '/app',
-                    'command' => 'sh /app/test.sh',
-                    'output_dir' => ['tmp/output', 'logs']
-                ],
-            ]
-        );
+        $container = ContainerBuilder::buildDevContainer();
+        $container->set(EnvironmentSetting::class, $environmentSetting);
+        return $container;
     }
 }

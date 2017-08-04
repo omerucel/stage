@@ -1,18 +1,22 @@
 <?php
 
-namespace Teknasyon\Stage;
+namespace Teknasyon\Stage\Suite;
 
-class Build
+use Psr\Container\ContainerInterface;
+use Teknasyon\Stage\EnvironmentSetting;
+use Teknasyon\Stage\SuiteSetting\SuiteSetting;
+
+abstract class SuiteAbstract implements Suite
 {
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
     /**
      * @var EnvironmentSetting
      */
     public $environmentSetting;
-
-    /**
-     * @var ProjectSetting
-     */
-    public $projectSetting;
 
     /**
      * @var SuiteSetting
@@ -25,18 +29,14 @@ class Build
     protected $id;
 
     /**
-     * @param EnvironmentSetting $environmentSetting
-     * @param ProjectSetting $projectSetting
+     * @param ContainerInterface $container
      * @param SuiteSetting $suiteSetting
      */
-    public function __construct(
-        EnvironmentSetting $environmentSetting,
-        ProjectSetting $projectSetting,
-        SuiteSetting $suiteSetting
-    ) {
-        $this->environmentSetting = $environmentSetting;
-        $this->projectSetting = $projectSetting;
+    public function __construct(ContainerInterface $container, SuiteSetting $suiteSetting)
+    {
+        $this->container = $container;
         $this->suiteSetting = $suiteSetting;
+        $this->environmentSetting = $container->get(EnvironmentSetting::class);
     }
 
     /**

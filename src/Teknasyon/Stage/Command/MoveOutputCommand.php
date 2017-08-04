@@ -2,16 +2,18 @@
 
 namespace Teknasyon\Stage\Command;
 
+use Teknasyon\Stage\Suite\Suite;
+
 class MoveOutputCommand extends CommandAbstract implements Command
 {
-    public function run()
+    public function run(Suite $suite)
     {
-        foreach ($this->build->suiteSetting->outputDir as $outputDir) {
+        foreach ($suite->suiteSetting->outputDir as $outputDir) {
             $cmd = [
                 'cp',
                 '-r',
-                $this->build->getBuildDir() . '/' . $outputDir,
-                $this->build->getOutputDir() . '/' . $outputDir,
+                $suite->getBuildDir() . '/' . $outputDir,
+                $suite->getOutputDir() . '/' . $outputDir,
             ];
             $process = $this->commandExecutor->execute($cmd);
             if ($process->getExitCode() < 0) {

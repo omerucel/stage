@@ -2,14 +2,16 @@
 
 namespace Teknasyon\Stage\Command;
 
+use Teknasyon\Stage\Suite\Suite;
+
 class DockerStopCommand extends CommandAbstract implements Command
 {
-    public function run()
+    public function run(Suite $suite)
     {
         $cmd = [
-            $this->build->environmentSetting->dockerBin,
+            $suite->environmentSetting->dockerBin,
             'rmi',
-            $this->build->getGeneratedId()
+            $suite->getGeneratedId()
         ];
         $this->commandExecutor->execute($cmd);
     }

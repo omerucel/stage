@@ -2,7 +2,12 @@
 
 namespace Teknasyon\Stage\Command;
 
+use Teknasyon\Stage\Suite\Suite;
+
 interface Command
 {
-    public function run();
+    /**
+     * @param Suite $suite
+     */
+    public function run(Suite $suite);
 }

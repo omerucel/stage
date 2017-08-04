@@ -6,25 +6,25 @@ class CleanBuildCommandTest extends CommandTestAbstract
 {
     public function testRun()
     {
-        $build = $this->getDockerComposeBuild();
+        $suite = $this->getDockerComposeSuite();
         $commandExecutor = $this->getCommandExecutor();
         $commandExecutor->expects($this->at(0))
             ->method('execute')
-            ->willReturnCallback(function ($args) use ($build) {
+            ->willReturnCallback(function ($args) use ($suite) {
                 $expected = [
                     'rm',
                     '-rf',
-                    $build->getBuildDir()
+                    $suite->getBuildDir()
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
             });
-        (new CleanBuildCommand($build, $commandExecutor))->run();
+        (new CleanBuildCommand($commandExecutor))->run($suite);
     }
 
     public function testExitCode()
     {
-        $build = $this->getDockerComposeBuild();
+        $suite = $this->getDockerComposeSuite();
         $commandExecutor = $this->getCommandExecutor();
         $commandExecutor->expects($this->at(0))
             ->method('execute')
@@ -32,6 +32,6 @@ class CleanBuildCommandTest extends CommandTestAbstract
                 return $this->generateProcessWithExitCode(-1);
             });
         $this->expectException(\Exception::class);
-        (new CleanBuildCommand($build, $commandExecutor))->run();
+        (new CleanBuildCommand($commandExecutor))->run($suite);
     }
 }

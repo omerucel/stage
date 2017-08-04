@@ -2,25 +2,31 @@
 
 namespace Teknasyon\Stage\Command;
 
+use Teknasyon\Stage\Suite\Suite;
+
 class SetupBuildCommand extends CommandAbstract implements Command
 {
-    public function run()
+    /**
+     * @param Suite $suite
+     * @throws \Exception
+     */
+    public function run(Suite $suite)
     {
         $cmd = [
             'cp',
             '-r',
-            $this->build->projectSetting->sourceCodeDir,
-            $this->build->getBuildDir()
+            $suite->suiteSetting->sourceCodeDir,
+            $suite->getBuildDir()
         ];
         $process = $this->commandExecutor->execute($cmd);
         if ($process->getExitCode() < 0) {
             throw new \Exception();
         }
-        foreach ($this->build->suiteSetting->outputDir as $outputDir) {
+        foreach ($suite->suiteSetting->outputDir as $outputDir) {
             $cmd = [
                 'mkdir',
                 '-p',
-                $this->build->getBuildDir() . '/' . $outputDir
+                $suite->getBuildDir() . '/' . $outputDir
             ];
             $process = $this->commandExecutor->execute($cmd);
             if ($process->getExitCode() < 0) {

@@ -2,16 +2,18 @@
 
 namespace Teknasyon\Stage\Command;
 
+use Teknasyon\Stage\Suite\Suite;
+
 class DockerComposeRmCommand extends CommandAbstract implements Command
 {
-    public function run()
+    public function run(Suite $suite)
     {
         $cmd = [
-            $this->build->environmentSetting->dockerComposeBin,
+            $suite->environmentSetting->dockerComposeBin,
             '-p',
-            $this->build->getGeneratedId(),
+            $suite->getGeneratedId(),
             '-f',
-            $this->build->getBuildDir() . '/' . $this->build->suiteSetting->dockerComposeFile,
+            $suite->getBuildDir() . '/' . $suite->suiteSetting->dockerComposeFile,
             'rm',
             '--force',
             '--stop'

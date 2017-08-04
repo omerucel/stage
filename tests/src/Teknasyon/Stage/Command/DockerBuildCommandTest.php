@@ -6,22 +6,22 @@ class DockerBuildCommandTest extends CommandTestAbstract
 {
     public function testRun()
     {
-        $build = $this->getDockerfileBuild();
+        $suite = $this->getDockerfileSuite();
         $commandExecutor = $this->getCommandExecutor();
         $commandExecutor->expects($this->at(0))
             ->method('execute')
-            ->willReturnCallback(function ($args) use ($build) {
+            ->willReturnCallback(function ($args) use ($suite) {
                 $expected = [
                     '/usr/local/bin/docker',
                     'build',
                     '-f',
-                    $build->getBuildDir() . '/Dockerfile',
+                    $suite->getBuildDir() . '/Dockerfile',
                     '-t',
-                    $build->getGeneratedId(),
-                    $build->getBuildDir()
+                    $suite->getGeneratedId(),
+                    $suite->getBuildDir()
                 ];
                 $this->assertEquals($expected, $args);
             });
-        (new DockerBuildCommand($build, $commandExecutor))->run();
+        (new DockerBuildCommand($commandExecutor))->run($suite);
     }
 }

@@ -6,18 +6,18 @@ class DockerStopCommandTest extends CommandTestAbstract
 {
     public function testRun()
     {
-        $build = $this->getDockerfileBuild();
+        $suite = $this->getDockerComposeSuite();
         $commandExecutor = $this->getCommandExecutor();
         $commandExecutor->expects($this->at(0))
             ->method('execute')
-            ->willReturnCallback(function ($args) use ($build) {
+            ->willReturnCallback(function ($args) use ($suite) {
                 $expected = [
                     '/usr/local/bin/docker',
                     'rmi',
-                    $build->getGeneratedId()
+                    $suite->getGeneratedId()
                 ];
                 $this->assertEquals($expected, $args);
             });
-        (new DockerStopCommand($build, $commandExecutor))->run();
+        (new DockerStopCommand($commandExecutor))->run($suite);
     }
 }

@@ -1,10 +1,8 @@
 <?php
 
-namespace Teknasyon\Stage\Suite;
+namespace Teknasyon\Stage\SuiteSetting;
 
-use Teknasyon\Stage\SuiteSetting;
-
-class DockerfileSuiteSetting extends SuiteSetting
+class DockerfileSuiteSetting extends SuiteSettingAbstract
 {
     public $dockerfile;
     public $sourceCodeTarget;
@@ -13,7 +11,7 @@ class DockerfileSuiteSetting extends SuiteSetting
      * @param $name
      * @param array $settings
      */
-    protected function __construct($name, array $settings)
+    public function __construct($name, array $settings)
     {
         parent::__construct($name, $settings);
         $this->dockerfile = $settings['dockerfile'] ?? null;

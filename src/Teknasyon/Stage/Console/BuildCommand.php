@@ -2,12 +2,12 @@
 
 namespace Teknasyon\Stage\Console;
 
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
-use Teknasyon\Stage\Build;
 use Teknasyon\Stage\Command\CleanBuildCommand;
 use Teknasyon\Stage\Command\DockerBuildCommand;
 use Teknasyon\Stage\Command\DockerRunCommand;
@@ -19,10 +19,12 @@ use Teknasyon\Stage\Command\DockerComposeUpCommand;
 use Teknasyon\Stage\Command\DockerComposeRmCommand;
 use Teknasyon\Stage\CommandExecutor;
 use Teknasyon\Stage\EnvironmentSetting;
-use Teknasyon\Stage\ProjectSetting;
-use Teknasyon\Stage\Suite\DockerComposeSuiteSetting;
-use Teknasyon\Stage\Suite\DockerfileSuiteSetting;
-use Teknasyon\Stage\SuiteSetting;
+use Teknasyon\Stage\Factory\ContainerFactory;
+use Teknasyon\Stage\Suite\DockerComposeSuite;
+use Teknasyon\Stage\Suite\DockerfileSuite;
+use Teknasyon\Stage\SuiteFactory;
+use Teknasyon\Stage\SuiteSetting\SuiteSetting;
+use Teknasyon\Stage\SuiteSettingParser;
 
 class BuildCommand extends Command
 {
@@ -44,15 +46,30 @@ class BuildCommand extends Command
         $buildsDir = $this->getValidatedBuildsDir($input);
         $outputDir = $this->getValidatedOutputsDir($input);
         $projectDir = $this->getValidatedProjectDir($input);
+        if ($input->getOption('dry') == true) {
+            $commandExecutor = new class extends CommandExecutor {
+                public function execute(array $args = [])
+                {
+                    echo implode(' ', $args) . PHP_EOL;
+                    $process = new Process($args);
+                    return $process;
+                }
+            };
+        } else {
+            //$commandExecutor = new CommandExecutor();
+        }
         $environmentSetting = new EnvironmentSetting([
             'docker_compose_bin' => $dockerComposeBin,
             'docker_bin' => $dockerBin,
             'builds_dir' => $buildsDir,
             'output_dir' => $outputDir
         ]);
-        $projectSetting = ProjectSetting::loadYaml($projectDir . '/stage.yml');
-        foreach (array_values($projectSetting->suites) as $suite) {
-            $this->build($environmentSetting, $projectSetting, $suite, $input->getOption('dry'));
+        $container = ContainerFactory::factory();
+        $container->set(EnvironmentSetting::class, $environmentSetting);
+        $container->set(CommandExecutor::class, $commandExecutor);
+        $suiteSettings = SuiteSettingParser::parse($projectDir . '/stage.yml');
+        foreach ($suiteSettings as $suiteSetting) {
+            $this->runSuite($container, $suiteSetting);
         }
     }
 
@@ -119,47 +136,34 @@ class BuildCommand extends Command
         return $projectDir;
     }
 
-    protected function build(
-        EnvironmentSetting $environmentSetting,
-        ProjectSetting $projectSetting,
-        SuiteSetting $suiteSetting,
-        $dry = false
-    ) {
-        $build = new Build($environmentSetting, $projectSetting, $suiteSetting);
-        if ($dry == true) {
-            $commandExecutor = new class extends CommandExecutor {
-                public function execute(array $args = [])
-                {
-                    echo implode(' ', $args) . PHP_EOL;
-                    $process = new Process($args);
-                    return $process;
-                }
-            };
-        } else {
-            $commandExecutor = new CommandExecutor();
-        }
+    protected function runSuite(ContainerInterface $container, SuiteSetting $suiteSetting)
+    {
+        $suite = SuiteFactory::factory($container, $suiteSetting);
         $commands = [];
-        if ($suiteSetting instanceof DockerComposeSuiteSetting) {
+        if ($suite instanceof DockerComposeSuite) {
             $commands = [
-                new SetupBuildCommand($build, $commandExecutor),
-                new DockerComposeUpCommand($build, $commandExecutor),
-                new DockerComposeRunCommand($build, $commandExecutor),
-                new DockerComposeRmCommand($build, $commandExecutor),
-                new MoveOutputCommand($build, $commandExecutor),
-                new CleanBuildCommand($build, $commandExecutor)
+                $container->get(SetupBuildCommand::class),
+                $container->get(DockerComposeUpCommand::class),
+                $container->get(DockerComposeRunCommand::class),
+                $container->get(DockerComposeRmCommand::class),
+                $container->get(MoveOutputCommand::class),
+                $container->get(CleanBuildCommand::class)
             ];
-        } elseif ($suiteSetting instanceof DockerfileSuiteSetting) {
+        } elseif ($suite instanceof DockerfileSuite) {
             $commands = [
-                new SetupBuildCommand($build, $commandExecutor),
-                new DockerBuildCommand($build, $commandExecutor),
-                new DockerRunCommand($build, $commandExecutor),
-                new DockerStopCommand($build, $commandExecutor),
-                new MoveOutputCommand($build, $commandExecutor),
-                new CleanBuildCommand($build, $commandExecutor)
+                $container->get(SetupBuildCommand::class),
+                $container->get(DockerBuildCommand::class),
+                $container->get(DockerRunCommand::class),
+                $container->get(DockerStopCommand::class),
+                $container->get(MoveOutputCommand::class),
+                $container->get(CleanBuildCommand::class)
             ];
         }
+        /**
+         * @var \Teknasyon\Stage\Command\Command $command
+         */
         foreach ($commands as $command) {
-            $command->run();
+            $command->run($suite);
         }
     }
 }

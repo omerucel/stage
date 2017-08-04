@@ -1,12 +1,13 @@
+default:
+    output_dir: var/output
+
 dockerfile:
     type: Dockerfile
     dockerfile: Dockerfile
     command: sh /app/test.sh
-    output_dir: var/output
 
 dockercompose:
     type: DockerCompose
     docker_compose_file: docker-compose.yml
     service_name: app
     command: sh /data/project/test.sh
-    output_dir: var/output

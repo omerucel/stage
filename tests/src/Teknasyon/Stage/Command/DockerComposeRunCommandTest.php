@@ -6,17 +6,17 @@ class DockerComposeRunCommandTest extends CommandTestAbstract
 {
     public function testRun()
     {
-        $build = $this->getDockerComposeBuild();
+        $suite = $this->getDockerComposeSuite();
         $commandExecutor = $this->getCommandExecutor();
         $commandExecutor->expects($this->at(0))
             ->method('execute')
-            ->willReturnCallback(function ($args) use ($build) {
+            ->willReturnCallback(function ($args) use ($suite) {
                 $expected = [
                     '/usr/local/bin/docker-compose',
                     '-p',
-                    $build->getGeneratedId(),
+                    $suite->getGeneratedId(),
                     '-f',
-                    $build->getBuildDir() . '/docker-compose.yml',
+                    $suite->getBuildDir() . '/docker-compose.yml',
                     'run',
                     'app',
                     'sh /data/project/test.sh'
@@ -24,12 +24,12 @@ class DockerComposeRunCommandTest extends CommandTestAbstract
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
             });
-        (new DockerComposeRunCommand($build, $commandExecutor))->run();
+        (new DockerComposeRunCommand($commandExecutor))->run($suite);
     }
 
     public function testExitCode()
     {
-        $build = $this->getDockerComposeBuild();
+        $suite = $this->getDockerComposeSuite();
         $commandExecutor = $this->getCommandExecutor();
         $commandExecutor->expects($this->at(0))
             ->method('execute')
@@ -37,6 +37,6 @@ class DockerComposeRunCommandTest extends CommandTestAbstract
                 return $this->generateProcessWithExitCode(-1);
             });
         $this->expectException(\Exception::class);
-        (new DockerComposeRunCommand($build, $commandExecutor))->run();
+        (new DockerComposeRunCommand($commandExecutor))->run($suite);
     }
 }
