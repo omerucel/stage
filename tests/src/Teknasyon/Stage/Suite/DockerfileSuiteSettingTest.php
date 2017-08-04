@@ -11,6 +11,7 @@ class DockerfileSuiteSettingTest extends TestCase
     {
         $suiteName = 'suitename';
         $settings = [
+            'type' => 'Dockerfile',
             'dockerfile' => 'docker/Dockerfile',
             'source_code_target' => '/app',
             'output_dir' => 'tmp/output',

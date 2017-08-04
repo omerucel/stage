@@ -13,6 +13,7 @@ class DockerRunCommandTest extends CommandTestAbstract
             '/sourcecode',
             [
                 'suitename' => [
+                    'type' => 'Dockerfile',
                     'dockerfile' => 'Dockerfile',
                     'source_code_target' => '/app',
                     'command' => 'sh /app/test.sh',

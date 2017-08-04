@@ -32,11 +32,8 @@ class SuiteSetting
      */
     public static function factory($name, array $settings)
     {
-        if (isset($settings['docker_compose_file'])) {
-            $class = DockerComposeSuiteSetting::class;
-        } elseif ($settings['dockerfile']) {
-            $class = DockerfileSuiteSetting::class;
-        }
-        return new $class($name, $settings);
+        $type = $settings['type'];
+        $className = 'Teknasyon\Stage\Suite\\' . $type . 'SuiteSetting';
+        return new $className($name, $settings);
     }
 }

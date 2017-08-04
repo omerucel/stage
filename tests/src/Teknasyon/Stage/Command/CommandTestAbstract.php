@@ -27,6 +27,7 @@ abstract class CommandTestAbstract extends TestCase
             '/sourcecode',
             [
                 'suitename' => [
+                    'type' => 'DockerCompose',
                     'docker_compose_file' => 'docker-compose.yml',
                     'service_name' => 'app',
                     'command' => 'sh /data/project/test.sh',

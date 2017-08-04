@@ -14,6 +14,7 @@ class DockerBuildCommandTest extends CommandTestAbstract
             '/sourcecode',
             [
                 'suitename' => [
+                    'type' => 'Dockerfile',
                     'dockerfile' => 'Dockerfile',
                     'command' => 'sh /data/project/test.sh',
                     'output_dir' => 'tmp/output'

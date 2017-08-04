@@ -24,6 +24,7 @@ class BuildTest extends TestCase
             '/sourcecode',
             [
                 'suitename' => [
+                    'type' => 'DockerCompose',
                     'docker_compose_file' => 'docker-compose.yml',
                     'service_name' => 'app',
                     'output_dir' => 'tmp/output',

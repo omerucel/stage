@@ -19,9 +19,11 @@ class ProjectSettingsTest extends TestCase
         $sourceCodeDir = '/sourcecode';
         $projectSettings = [
             'suite1' => [
+                'type' => 'Dockerfile',
                 'dockerfile' => 'Dockerfile'
             ],
             'suite2' => [
+                'type' => 'Dockerfile',
                 'dockerfile' => 'Dockerfile'
             ]
         ];
@@ -35,6 +37,7 @@ class ProjectSettingsTest extends TestCase
         $sourceCodeDir = '/sourcecode';
         $projectSettings = [
             'default' => [
+                'type' => 'Dockerfile',
                 'dockerfile' => 'Dockerfile',
                 'command' => 'sh /data/project/test.sh',
                 'output_dir' => 'tmp/output'

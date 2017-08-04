@@ -11,6 +11,7 @@ class DockerComposeSuiteSettingTest extends TestCase
     {
         $suiteName = 'suitename';
         $settings = [
+            'type' => 'DockerCompose',
             'docker_compose_file' => 'docker/docker-compose.yml',
             'service_name' => 'app',
             'output_dir' => 'tmp/output',
