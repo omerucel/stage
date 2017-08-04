@@ -8,15 +8,15 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use Teknasyon\Stage\Build;
-use Teknasyon\Stage\Command\CleanTestCommand;
+use Teknasyon\Stage\Command\CleanBuildCommand;
 use Teknasyon\Stage\Command\DockerBuildCommand;
 use Teknasyon\Stage\Command\DockerRunCommand;
 use Teknasyon\Stage\Command\DockerStopCommand;
 use Teknasyon\Stage\Command\MoveOutputCommand;
-use Teknasyon\Stage\Command\RunTestCommand;
-use Teknasyon\Stage\Command\SetupTestCommand;
-use Teknasyon\Stage\Command\StartServicesCommand;
-use Teknasyon\Stage\Command\StopServicesCommand;
+use Teknasyon\Stage\Command\DockerComposeRunCommand;
+use Teknasyon\Stage\Command\SetupBuildCommand;
+use Teknasyon\Stage\Command\DockerComposeUpCommand;
+use Teknasyon\Stage\Command\DockerComposeRmCommand;
 use Teknasyon\Stage\CommandExecutor;
 use Teknasyon\Stage\EnvironmentSetting;
 use Teknasyon\Stage\ProjectSetting;
@@ -141,21 +141,21 @@ class BuildCommand extends Command
         $commands = [];
         if ($suiteSetting instanceof DockerComposeSuiteSetting) {
             $commands = [
-                new SetupTestCommand($build, $commandExecutor),
-                new StartServicesCommand($build, $commandExecutor),
-                new RunTestCommand($build, $commandExecutor),
-                new StopServicesCommand($build, $commandExecutor),
+                new SetupBuildCommand($build, $commandExecutor),
+                new DockerComposeUpCommand($build, $commandExecutor),
+                new DockerComposeRunCommand($build, $commandExecutor),
+                new DockerComposeRmCommand($build, $commandExecutor),
                 new MoveOutputCommand($build, $commandExecutor),
-                new CleanTestCommand($build, $commandExecutor)
+                new CleanBuildCommand($build, $commandExecutor)
             ];
         } elseif ($suiteSetting instanceof DockerfileSuiteSetting) {
             $commands = [
-                new SetupTestCommand($build, $commandExecutor),
+                new SetupBuildCommand($build, $commandExecutor),
                 new DockerBuildCommand($build, $commandExecutor),
                 new DockerRunCommand($build, $commandExecutor),
                 new DockerStopCommand($build, $commandExecutor),
                 new MoveOutputCommand($build, $commandExecutor),
-                new CleanTestCommand($build, $commandExecutor)
+                new CleanBuildCommand($build, $commandExecutor)
             ];
         }
         foreach ($commands as $command) {

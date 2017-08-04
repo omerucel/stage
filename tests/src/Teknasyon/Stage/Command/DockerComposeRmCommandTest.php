@@ -2,7 +2,7 @@
 
 namespace Teknasyon\Stage\Command;
 
-class RunTestCommandTest extends CommandTestAbstract
+class DockerComposeRmCommandTest extends CommandTestAbstract
 {
     public function testRun()
     {
@@ -17,14 +17,14 @@ class RunTestCommandTest extends CommandTestAbstract
                     $build->getGeneratedId(),
                     '-f',
                     $build->getBuildDir() . '/docker-compose.yml',
-                    'run',
-                    'app',
-                    'sh /data/project/test.sh'
+                    'rm',
+                    '--force',
+                    '--stop'
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
             });
-        (new RunTestCommand($build, $commandExecutor))->run();
+        (new DockerComposeRmCommand($build, $commandExecutor))->run();
     }
 
     public function testExitCode()
@@ -33,10 +33,10 @@ class RunTestCommandTest extends CommandTestAbstract
         $commandExecutor = $this->getCommandExecutor();
         $commandExecutor->expects($this->at(0))
             ->method('execute')
-            ->willReturnCallback(function () {
+            ->willReturnCallback(function ($args) {
                 return $this->generateProcessWithExitCode(-1);
             });
         $this->expectException(\Exception::class);
-        (new RunTestCommand($build, $commandExecutor))->run();
+        (new DockerComposeRmCommand($build, $commandExecutor))->run();
     }
 }

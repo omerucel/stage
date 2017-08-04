@@ -2,21 +2,21 @@
 
 namespace Teknasyon\Stage\Command;
 
-class StartServicesCommand extends CommandAbstract implements Command
+class DockerComposeRunCommand extends CommandAbstract implements Command
 {
     public function run()
     {
-        $args = [
+        $cmd = [
             $this->build->environmentSetting->dockerComposeBin,
             '-p',
             $this->build->getGeneratedId(),
             '-f',
             $this->build->getBuildDir() . '/' . $this->build->suiteSetting->dockerComposeFile,
-            'up',
-            '-d',
-            '--build'
+            'run',
+            $this->build->suiteSetting->serviceName,
+            $this->build->suiteSetting->command
         ];
-        $process = $this->commandExecutor->execute($args);
+        $process = $this->commandExecutor->execute($cmd);
         if ($process->getExitCode() < 0) {
             throw new \Exception();
         }

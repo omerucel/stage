@@ -2,7 +2,7 @@
 
 namespace Teknasyon\Stage\Command;
 
-class SetupTestCommand extends CommandAbstract implements Command
+class SetupBuildCommand extends CommandAbstract implements Command
 {
     public function run()
     {

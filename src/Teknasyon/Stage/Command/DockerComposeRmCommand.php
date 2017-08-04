@@ -2,7 +2,7 @@
 
 namespace Teknasyon\Stage\Command;
 
-class StopServicesCommand extends CommandAbstract implements Command
+class DockerComposeRmCommand extends CommandAbstract implements Command
 {
     public function run()
     {

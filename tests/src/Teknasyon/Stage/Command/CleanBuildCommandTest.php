@@ -2,7 +2,7 @@
 
 namespace Teknasyon\Stage\Command;
 
-class CleanTestCommandTest extends CommandTestAbstract
+class CleanBuildCommandTest extends CommandTestAbstract
 {
     public function testRun()
     {
@@ -19,7 +19,7 @@ class CleanTestCommandTest extends CommandTestAbstract
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
             });
-        (new CleanTestCommand($build, $commandExecutor))->run();
+        (new CleanBuildCommand($build, $commandExecutor))->run();
     }
 
     public function testExitCode()
@@ -32,6 +32,6 @@ class CleanTestCommandTest extends CommandTestAbstract
                 return $this->generateProcessWithExitCode(-1);
             });
         $this->expectException(\Exception::class);
-        (new CleanTestCommand($build, $commandExecutor))->run();
+        (new CleanBuildCommand($build, $commandExecutor))->run();
     }
 }

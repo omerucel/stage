@@ -2,7 +2,7 @@
 
 namespace Teknasyon\Stage\Command;
 
-class CleanTestCommand extends CommandAbstract implements Command
+class CleanBuildCommand extends CommandAbstract implements Command
 {
     public function run()
     {

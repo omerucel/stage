@@ -2,7 +2,7 @@
 
 namespace Teknasyon\Stage\Command;
 
-class StartServicesCommandTest extends CommandTestAbstract
+class DockerComposeUpCommandTest extends CommandTestAbstract
 {
     public function testRun()
     {
@@ -25,7 +25,7 @@ class StartServicesCommandTest extends CommandTestAbstract
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
             });
-        (new StartServicesCommand($build, $commandExecutor))->run();
+        (new DockerComposeUpCommand($build, $commandExecutor))->run();
     }
 
     public function testExitCode()
@@ -39,6 +39,6 @@ class StartServicesCommandTest extends CommandTestAbstract
                 return $this->generateProcessWithExitCode(-1);
             });
         $this->expectException(\Exception::class);
-        (new StartServicesCommand($build, $commandExecutor))->run();
+        (new DockerComposeUpCommand($build, $commandExecutor))->run();
     }
 }

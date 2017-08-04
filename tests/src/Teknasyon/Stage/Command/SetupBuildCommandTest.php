@@ -2,7 +2,7 @@
 
 namespace Teknasyon\Stage\Command;
 
-class SetupTestCommandTest extends CommandTestAbstract
+class SetupBuildCommandTest extends CommandTestAbstract
 {
     public function testRun()
     {
@@ -42,7 +42,7 @@ class SetupTestCommandTest extends CommandTestAbstract
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
             });
-        (new SetupTestCommand($build, $commandExecutor))->run();
+        (new SetupBuildCommand($build, $commandExecutor))->run();
     }
 
     public function testExitCode()
@@ -55,7 +55,7 @@ class SetupTestCommandTest extends CommandTestAbstract
                 return $this->generateProcessWithExitCode(-1);
             });
         $this->expectException(\Exception::class);
-        (new SetupTestCommand($build, $commandExecutor))->run();
+        (new SetupBuildCommand($build, $commandExecutor))->run();
     }
 
     public function testMultipleOutputDirSupport()
@@ -89,6 +89,6 @@ class SetupTestCommandTest extends CommandTestAbstract
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
             });
-        (new SetupTestCommand($build, $commandExecutor))->run();
+        (new SetupBuildCommand($build, $commandExecutor))->run();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Teknasyon\Stage\Command;
 
-class StopServicesCommandTest extends CommandTestAbstract
+class DockerComposeRunCommandTest extends CommandTestAbstract
 {
     public function testRun()
     {
@@ -17,14 +17,14 @@ class StopServicesCommandTest extends CommandTestAbstract
                     $build->getGeneratedId(),
                     '-f',
                     $build->getBuildDir() . '/docker-compose.yml',
-                    'rm',
-                    '--force',
-                    '--stop'
+                    'run',
+                    'app',
+                    'sh /data/project/test.sh'
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
             });
-        (new StopServicesCommand($build, $commandExecutor))->run();
+        (new DockerComposeRunCommand($build, $commandExecutor))->run();
     }
 
     public function testExitCode()
@@ -33,10 +33,10 @@ class StopServicesCommandTest extends CommandTestAbstract
         $commandExecutor = $this->getCommandExecutor();
         $commandExecutor->expects($this->at(0))
             ->method('execute')
-            ->willReturnCallback(function ($args) {
+            ->willReturnCallback(function () {
                 return $this->generateProcessWithExitCode(-1);
             });
         $this->expectException(\Exception::class);
-        (new StopServicesCommand($build, $commandExecutor))->run();
+        (new DockerComposeRunCommand($build, $commandExecutor))->run();
     }
 }
