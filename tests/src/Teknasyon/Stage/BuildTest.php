@@ -23,7 +23,7 @@ class BuildTest extends TestCase
         $projectSettings = new ProjectSetting(
             '/sourcecode',
             [
-                'default' => [
+                'suitename' => [
                     'docker_compose_file' => 'docker-compose.yml',
                     'service_name' => 'app',
                     'output_dir' => 'tmp/output',
@@ -31,7 +31,7 @@ class BuildTest extends TestCase
                 ]
             ]
         );
-        $this->build = new Build($environmentSettings, $projectSettings, $projectSettings->suites['default']);
+        $this->build = new Build($environmentSettings, $projectSettings, $projectSettings->suites['suitename']);
     }
 
     public function testProperties()

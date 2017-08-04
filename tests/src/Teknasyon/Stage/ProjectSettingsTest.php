@@ -45,7 +45,7 @@ class ProjectSettingsTest extends TestCase
         ];
         $projectSetting = new ProjectSetting($sourceCodeDir, $projectSettings);
         $this->assertEquals('/sourcecode', $projectSetting->sourceCodeDir);
-        $this->assertCount(2, $projectSetting->suites);
+        $this->assertCount(1, $projectSetting->suites);
         $this->assertEquals('Dockerfile.php7', $projectSetting->suites['php7']->dockerfile);
         $this->assertEquals('sh /data/project/test.sh', $projectSetting->suites['php7']->command);
         $this->assertEquals(['tmp/output'], $projectSetting->suites['php7']->outputDir);

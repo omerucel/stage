@@ -9,7 +9,7 @@ class DockerfileSuiteSettingTest extends TestCase
 {
     public function testParameters()
     {
-        $suiteName = 'default';
+        $suiteName = 'suitename';
         $settings = [
             'dockerfile' => 'docker/Dockerfile',
             'source_code_target' => '/app',

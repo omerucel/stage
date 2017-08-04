@@ -16,12 +16,12 @@ class ProjectSetting
     public function __construct($sourceCodeDir, array $settings = [])
     {
         $this->sourceCodeDir = $sourceCodeDir;
-        $suiteNames = array_keys($settings);
         $defaultSuiteSettings = [];
         if (isset($settings['default'])) {
             $defaultSuiteSettings = $settings['default'];
+            unset($settings['default']);
         }
-        foreach ($suiteNames as $name) {
+        foreach (array_keys($settings) as $name) {
             $this->suites[$name] = SuiteSetting::factory($name, array_merge($defaultSuiteSettings, $settings[$name]));
         }
     }

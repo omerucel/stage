@@ -12,7 +12,7 @@ class DockerRunCommandTest extends CommandTestAbstract
         $projectSetting = new ProjectSetting(
             '/sourcecode',
             [
-                'default' => [
+                'suitename' => [
                     'dockerfile' => 'Dockerfile',
                     'source_code_target' => '/app',
                     'command' => 'sh /app/test.sh',
@@ -20,7 +20,7 @@ class DockerRunCommandTest extends CommandTestAbstract
                 ]
             ]
         );
-        $build = new Build($this->getEnvironmentSetting(), $projectSetting, $projectSetting->suites['default']);
+        $build = new Build($this->getEnvironmentSetting(), $projectSetting, $projectSetting->suites['suitename']);
         $this->commandExecutor->expects($this->at(0))
             ->method('execute')
             ->willReturnCallback(function ($args) use ($build) {

@@ -9,7 +9,7 @@ class DockerComposeSuiteSettingTest extends TestCase
 {
     public function testParameters()
     {
-        $suiteName = 'default';
+        $suiteName = 'suitename';
         $settings = [
             'docker_compose_file' => 'docker/docker-compose.yml',
             'service_name' => 'app',

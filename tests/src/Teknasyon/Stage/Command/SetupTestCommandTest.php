@@ -62,7 +62,7 @@ class SetupTestCommandTest extends CommandTestAbstract
         $projectSetting = new ProjectSetting(
             '/sourcecode',
             [
-                'default' => [
+                'suitename' => [
                     'docker_compose_file' => 'docker-compose.yml',
                     'service_name' => 'app',
                     'command' => 'sh /data/project/test.sh',
@@ -70,7 +70,7 @@ class SetupTestCommandTest extends CommandTestAbstract
                 ]
             ]
         );
-        $build = new Build($this->getEnvironmentSetting(), $projectSetting, $projectSetting->suites['default']);
+        $build = new Build($this->getEnvironmentSetting(), $projectSetting, $projectSetting->suites['suitename']);
         $command = new SetupTestCommand($build, $this->commandExecutor);
         $this->commandExecutor->expects($this->at(0))
             ->method('execute')

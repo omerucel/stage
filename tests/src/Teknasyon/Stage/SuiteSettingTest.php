@@ -8,7 +8,7 @@ class SuiteSettingTest extends TestCase
 {
     public function testParameters()
     {
-        $suiteName = 'default';
+        $suiteName = 'suitename';
         $settings = [
             'docker_compose_file' => 'docker/docker-compose.yml',
             'service_name' => 'app',
@@ -19,7 +19,7 @@ class SuiteSettingTest extends TestCase
         $this->assertNotNull($setting->name);
         $this->assertNotNull($setting->outputDir);
         $this->assertNotNull($setting->command);
-        $this->assertEquals('default', $setting->name);
+        $this->assertEquals('suitename', $setting->name);
         $this->assertEquals([$settings['output_dir']], $setting->outputDir);
         $this->assertEquals($settings['command'], $setting->command);
     }

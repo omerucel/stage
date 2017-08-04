@@ -13,14 +13,14 @@ class DockerBuildCommandTest extends CommandTestAbstract
         $projectSetting = new ProjectSetting(
             '/sourcecode',
             [
-                'default' => [
+                'suitename' => [
                     'dockerfile' => 'Dockerfile',
                     'command' => 'sh /data/project/test.sh',
                     'output_dir' => 'tmp/output'
                 ]
             ]
         );
-        $build = new Build($this->getEnvironmentSetting(), $projectSetting, $projectSetting->suites['default']);
+        $build = new Build($this->getEnvironmentSetting(), $projectSetting, $projectSetting->suites['suitename']);
         $commandExecutor = $this->getMockBuilder(CommandExecutor::class)->getMock();
         $commandExecutor->expects($this->at(0))
             ->method('execute')
