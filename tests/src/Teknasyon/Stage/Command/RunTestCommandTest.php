@@ -4,28 +4,19 @@ namespace Teknasyon\Stage\Command;
 
 class RunTestCommandTest extends CommandTestAbstract
 {
-    /**
-     * @var RunTestCommand
-     */
-    protected $command;
-
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->command = new RunTestCommand($this->build, $this->commandExecutor);
-    }
-
     public function testRun()
     {
-        $this->commandExecutor->expects($this->at(0))
+        $build = $this->getDockerComposeBuild();
+        $commandExecutor = $this->getCommandExecutor();
+        $commandExecutor->expects($this->at(0))
             ->method('execute')
-            ->willReturnCallback(function ($args) {
+            ->willReturnCallback(function ($args) use ($build) {
                 $expected = [
                     '/usr/local/bin/docker-compose',
                     '-p',
-                    $this->build->getGeneratedId(),
+                    $build->getGeneratedId(),
                     '-f',
-                    $this->build->getBuildDir() . '/docker-compose.yml',
+                    $build->getBuildDir() . '/docker-compose.yml',
                     'run',
                     'app',
                     'sh /data/project/test.sh'
@@ -33,17 +24,19 @@ class RunTestCommandTest extends CommandTestAbstract
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
             });
-        $this->command->run();
+        (new RunTestCommand($build, $commandExecutor))->run();
     }
 
     public function testExitCode()
     {
-        $this->commandExecutor->expects($this->at(0))
+        $build = $this->getDockerComposeBuild();
+        $commandExecutor = $this->getCommandExecutor();
+        $commandExecutor->expects($this->at(0))
             ->method('execute')
             ->willReturnCallback(function () {
                 return $this->generateProcessWithExitCode(-1);
             });
         $this->expectException(\Exception::class);
-        $this->command->run();
+        (new RunTestCommand($build, $commandExecutor))->run();
     }
 }

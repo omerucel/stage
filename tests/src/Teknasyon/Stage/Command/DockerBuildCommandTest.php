@@ -2,27 +2,12 @@
 
 namespace Teknasyon\Stage\Command;
 
-use Teknasyon\Stage\Build;
-use Teknasyon\Stage\CommandExecutor;
-use Teknasyon\Stage\ProjectSetting;
-
 class DockerBuildCommandTest extends CommandTestAbstract
 {
     public function testRun()
     {
-        $projectSetting = new ProjectSetting(
-            '/sourcecode',
-            [
-                'suitename' => [
-                    'type' => 'Dockerfile',
-                    'dockerfile' => 'Dockerfile',
-                    'command' => 'sh /data/project/test.sh',
-                    'output_dir' => 'tmp/output'
-                ]
-            ]
-        );
-        $build = new Build($this->getEnvironmentSetting(), $projectSetting, $projectSetting->suites['suitename']);
-        $commandExecutor = $this->getMockBuilder(CommandExecutor::class)->getMock();
+        $build = $this->getDockerfileBuild();
+        $commandExecutor = $this->getCommandExecutor();
         $commandExecutor->expects($this->at(0))
             ->method('execute')
             ->willReturnCallback(function ($args) use ($build) {
@@ -37,7 +22,6 @@ class DockerBuildCommandTest extends CommandTestAbstract
                 ];
                 $this->assertEquals($expected, $args);
             });
-        $command = new DockerBuildCommand($build, $commandExecutor);
-        $command->run();
+        (new DockerBuildCommand($build, $commandExecutor))->run();
     }
 }

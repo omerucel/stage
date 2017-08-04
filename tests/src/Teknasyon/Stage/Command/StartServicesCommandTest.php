@@ -4,29 +4,20 @@ namespace Teknasyon\Stage\Command;
 
 class StartServicesCommandTest extends CommandTestAbstract
 {
-    /**
-     * @var StartServicesCommand
-     */
-    protected $command;
-
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->command = new StartServicesCommand($this->build, $this->commandExecutor);
-    }
-
     public function testRun()
     {
-        $this->commandExecutor->expects($this->any())
+        $build = $this->getDockerComposeBuild();
+        $commandExecutor = $this->getCommandExecutor();
+        $commandExecutor->expects($this->any())
             ->method('execute')
             ->withAnyParameters()
-            ->willReturnCallback(function ($args) {
+            ->willReturnCallback(function ($args) use ($build) {
                 $expected = [
                     '/usr/local/bin/docker-compose',
                     '-p',
-                    $this->build->getGeneratedId(),
+                    $build->getGeneratedId(),
                     '-f',
-                    $this->build->getBuildDir() . '/docker-compose.yml',
+                    $build->getBuildDir() . '/docker-compose.yml',
                     'up',
                     '-d',
                     '--build'
@@ -34,18 +25,20 @@ class StartServicesCommandTest extends CommandTestAbstract
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
             });
-        $this->command->run();
+        (new StartServicesCommand($build, $commandExecutor))->run();
     }
 
     public function testExitCode()
     {
-        $this->commandExecutor->expects($this->any())
+        $build = $this->getDockerComposeBuild();
+        $commandExecutor = $this->getCommandExecutor();
+        $commandExecutor->expects($this->any())
             ->method('execute')
             ->withAnyParameters()
             ->willReturnCallback(function () {
                 return $this->generateProcessWithExitCode(-1);
             });
         $this->expectException(\Exception::class);
-        $this->command->run();
+        (new StartServicesCommand($build, $commandExecutor))->run();
     }
 }

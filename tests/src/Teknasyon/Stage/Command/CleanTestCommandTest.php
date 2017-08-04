@@ -4,41 +4,34 @@ namespace Teknasyon\Stage\Command;
 
 class CleanTestCommandTest extends CommandTestAbstract
 {
-    /**
-     * @var CleanTestCommand
-     */
-    protected $command;
-
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->command = new CleanTestCommand($this->build, $this->commandExecutor);
-    }
-
     public function testRun()
     {
-        $this->commandExecutor->expects($this->at(0))
+        $build = $this->getDockerComposeBuild();
+        $commandExecutor = $this->getCommandExecutor();
+        $commandExecutor->expects($this->at(0))
             ->method('execute')
-            ->willReturnCallback(function ($args) {
+            ->willReturnCallback(function ($args) use ($build) {
                 $expected = [
                     'rm',
                     '-rf',
-                    $this->build->getBuildDir()
+                    $build->getBuildDir()
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
             });
-        $this->command->run();
+        (new CleanTestCommand($build, $commandExecutor))->run();
     }
 
     public function testExitCode()
     {
-        $this->commandExecutor->expects($this->at(0))
+        $build = $this->getDockerComposeBuild();
+        $commandExecutor = $this->getCommandExecutor();
+        $commandExecutor->expects($this->at(0))
             ->method('execute')
             ->willReturnCallback(function () {
                 return $this->generateProcessWithExitCode(-1);
             });
         $this->expectException(\Exception::class);
-        $this->command->run();
+        (new CleanTestCommand($build, $commandExecutor))->run();
     }
 }
