@@ -56,7 +56,7 @@ class BuildCommand extends Command
                 }
             };
         } else {
-            //$commandExecutor = new CommandExecutor();
+            $commandExecutor = new CommandExecutor();
         }
         $environmentSetting = new EnvironmentSetting([
             'docker_compose_bin' => $dockerComposeBin,

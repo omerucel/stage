@@ -22,16 +22,17 @@ class SetupBuildCommand extends CommandAbstract implements Command
         if ($process->getExitCode() < 0) {
             throw new \Exception();
         }
+        $cmd = [
+            'mkdir',
+            '-p'
+        ];
         foreach ($suite->suiteSetting->outputDir as $outputDir) {
-            $cmd = [
-                'mkdir',
-                '-p',
-                $suite->getBuildDir() . '/' . $outputDir
-            ];
-            $process = $this->commandExecutor->execute($cmd);
-            if ($process->getExitCode() < 0) {
-                throw new \Exception();
-            }
+            $cmd[] = $suite->getBuildDir() . '/' . $outputDir;
+            $cmd[] = $suite->getOutputDir() . '/' . $outputDir;
+        }
+        $process = $this->commandExecutor->execute($cmd);
+        if ($process->getExitCode() < 0) {
+            throw new \Exception();
         }
     }
 }

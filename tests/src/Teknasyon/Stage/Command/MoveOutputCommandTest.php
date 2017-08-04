@@ -15,7 +15,7 @@ class MoveOutputCommandTest extends CommandTestAbstract
                     'cp',
                     '-r',
                     $suite->getBuildDir() . '/tmp/output',
-                    $suite->getOutputDir() . '/tmp/output'
+                    $suite->getOutputDir() . '/tmp'
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
@@ -27,7 +27,7 @@ class MoveOutputCommandTest extends CommandTestAbstract
                     'cp',
                     '-r',
                     $suite->getBuildDir() . '/logs',
-                    $suite->getOutputDir() . '/logs'
+                    $suite->getOutputDir()
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);

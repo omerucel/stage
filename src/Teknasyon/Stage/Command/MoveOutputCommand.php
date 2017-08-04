@@ -13,7 +13,7 @@ class MoveOutputCommand extends CommandAbstract implements Command
                 'cp',
                 '-r',
                 $suite->getBuildDir() . '/' . $outputDir,
-                $suite->getOutputDir() . '/' . $outputDir,
+                dirname($suite->getOutputDir() . '/' . $outputDir),
             ];
             $process = $this->commandExecutor->execute($cmd);
             if ($process->getExitCode() < 0) {

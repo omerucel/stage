@@ -26,18 +26,10 @@ class SetupBuildCommandTest extends CommandTestAbstract
                 $expected = [
                     'mkdir',
                     '-p',
-                    $suite->getBuildDir() . '/tmp/output'
-                ];
-                $this->assertEquals($expected, $args);
-                return $this->generateProcessWithExitCode(0);
-            });
-        $commandExecutor->expects($this->at(2))
-            ->method('execute')
-            ->willReturnCallback(function ($args) use ($suite) {
-                $expected = [
-                    'mkdir',
-                    '-p',
-                    $suite->getBuildDir() . '/logs'
+                    $suite->getBuildDir() . '/tmp/output',
+                    $suite->getOutputDir() . '/tmp/output',
+                    $suite->getBuildDir() . '/logs',
+                    $suite->getOutputDir() . '/logs'
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
@@ -73,18 +65,10 @@ class SetupBuildCommandTest extends CommandTestAbstract
                 $expected = [
                     'mkdir',
                     '-p',
-                    $suite->getBuildDir() . '/tmp/output'
-                ];
-                $this->assertEquals($expected, $args);
-                return $this->generateProcessWithExitCode(0);
-            });
-        $commandExecutor->expects($this->at(2))
-            ->method('execute')
-            ->willReturnCallback(function ($args) use ($suite) {
-                $expected = [
-                    'mkdir',
-                    '-p',
-                    $suite->getBuildDir() . '/logs'
+                    $suite->getBuildDir() . '/tmp/output',
+                    $suite->getOutputDir() . '/tmp/output',
+                    $suite->getBuildDir() . '/logs',
+                    $suite->getOutputDir() . '/logs'
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
