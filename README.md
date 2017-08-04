@@ -1,6 +1,6 @@
 # Hakkında
 
-Docker destekli [Continues Testing](https://continuousdelivery.com/foundations/test-automation/) aracı.
+Docker destekli [Continuous Testing](https://continuousdelivery.com/foundations/test-automation/) aracı.
 
 # Kullanımı
 
