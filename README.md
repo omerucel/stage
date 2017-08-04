@@ -16,7 +16,7 @@ dockerfile:
     type: DockerFile
     dockerfile: Dockerfile
     source_code_target: /app
-    command: sh /app/test_dockercompose.sh
+    command: sh /app/test_dockerfile.sh
 
 dockercompose:
     type: DockerCompose
