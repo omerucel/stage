@@ -1,0 +1,4 @@
+output_dir: /outputs
+builds_dir: /builds
+docker_bin: /usr/local/bin/docker
+docker_compose_bin: /usr/local/bin/docker-compose
