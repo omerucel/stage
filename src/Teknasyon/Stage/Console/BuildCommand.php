@@ -8,22 +8,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
-use Teknasyon\Stage\Command\CleanBuildCommand;
-use Teknasyon\Stage\Command\DockerBuildCommand;
-use Teknasyon\Stage\Command\DockerRunCommand;
-use Teknasyon\Stage\Command\DockerRunImageCommand;
-use Teknasyon\Stage\Command\DockerStopCommand;
-use Teknasyon\Stage\Command\MoveOutputCommand;
-use Teknasyon\Stage\Command\DockerComposeRunCommand;
-use Teknasyon\Stage\Command\SetupBuildCommand;
-use Teknasyon\Stage\Command\DockerComposeUpCommand;
-use Teknasyon\Stage\Command\DockerComposeRmCommand;
 use Teknasyon\Stage\CommandExecutor;
 use Teknasyon\Stage\EnvironmentSetting;
 use Teknasyon\Stage\Factory\ContainerFactory;
-use Teknasyon\Stage\Suite\DockerComposeSuite;
-use Teknasyon\Stage\Suite\DockerfileSuite;
-use Teknasyon\Stage\Suite\DockerImageSuite;
 use Teknasyon\Stage\SuiteFactory;
 use Teknasyon\Stage\SuiteSetting\SuiteSetting;
 use Teknasyon\Stage\SuiteSettingParser;
@@ -140,38 +127,12 @@ class BuildCommand extends Command
 
     protected function runSuite(ContainerInterface $container, SuiteSetting $suiteSetting)
     {
-        $suite = SuiteFactory::factory($container, $suiteSetting);
-        $commands = [];
-        if ($suite instanceof DockerComposeSuite) {
-            $commands = [
-                $container->get(SetupBuildCommand::class),
-                $container->get(DockerComposeUpCommand::class),
-                $container->get(DockerComposeRunCommand::class),
-                $container->get(DockerComposeRmCommand::class),
-                $container->get(MoveOutputCommand::class),
-                $container->get(CleanBuildCommand::class)
-            ];
-        } elseif ($suite instanceof DockerfileSuite) {
-            $commands = [
-                $container->get(SetupBuildCommand::class),
-                $container->get(DockerBuildCommand::class),
-                $container->get(DockerRunCommand::class),
-                $container->get(DockerStopCommand::class),
-                $container->get(MoveOutputCommand::class),
-                $container->get(CleanBuildCommand::class)
-            ];
-        } elseif ($suite instanceof DockerImageSuite) {
-            $commands = [
-                $container->get(SetupBuildCommand::class),
-                $container->get(DockerRunImageCommand::class),
-                $container->get(MoveOutputCommand::class),
-                $container->get(CleanBuildCommand::class)
-            ];
-        }
         /**
          * @var \Teknasyon\Stage\Command\Command $command
          */
-        foreach ($commands as $command) {
+        $suite = SuiteFactory::factory($container, $suiteSetting);
+        foreach ($suite->getCommands() as $commandClass) {
+            $command = $container->get($commandClass);
             $command->run($suite);
         }
     }

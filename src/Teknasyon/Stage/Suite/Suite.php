@@ -18,4 +18,9 @@ interface Suite
      * @return string
      */
     public function getOutputDir();
+
+    /**
+     * @return array
+     */
+    public function getCommands();
 }

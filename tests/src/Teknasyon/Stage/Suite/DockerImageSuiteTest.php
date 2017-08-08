@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Teknasyon\Stage\EnvironmentSetting;
 use Teknasyon\Stage\SuiteSetting\DockerImageSuiteSetting;
 use Teknasyon\Stage\SuiteSetting\SuiteSettingAbstract;
+use Teknasyon\Stage\Command;
 
 class DockerImageSuiteTest extends TestCase
 {
@@ -45,5 +46,16 @@ class DockerImageSuiteTest extends TestCase
     public function testGetOutputDir()
     {
         $this->assertEquals('/outputs/' . $this->suite->getGeneratedId(), $this->suite->getOutputDir());
+    }
+
+    public function testGetCommands()
+    {
+        $expected = [
+            Command\SetupBuildCommand::class,
+            Command\DockerRunImageCommand::class,
+            Command\MoveOutputCommand::class,
+            Command\CleanBuildCommand::class
+        ];
+        $this->assertEquals($expected, $this->suite->getCommands());
     }
 }

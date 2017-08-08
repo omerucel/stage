@@ -4,6 +4,7 @@ namespace Teknasyon\Stage\Suite;
 
 use DI\ContainerBuilder;
 use PHPUnit\Framework\TestCase;
+use Teknasyon\Stage\Command;
 use Teknasyon\Stage\EnvironmentSetting;
 use Teknasyon\Stage\SuiteSetting\DockerComposeSuiteSetting;
 use Teknasyon\Stage\SuiteSetting\SuiteSettingAbstract;
@@ -24,7 +25,7 @@ class DockerComposeSuiteTest extends TestCase
         $container = ContainerBuilder::buildDevContainer();
         $container->set(EnvironmentSetting::class, $environmentSetting);
         $suiteSetting = $this->getMockBuilder(DockerComposeSuiteSetting::class)->disableOriginalConstructor()->getMock();
-        $this->suite = new DockerfileSuite($container, $suiteSetting);
+        $this->suite = new DockerComposeSuite($container, $suiteSetting);
     }
 
     public function testParameters()
@@ -45,5 +46,18 @@ class DockerComposeSuiteTest extends TestCase
     public function testGetOutputDir()
     {
         $this->assertEquals('/outputs/' . $this->suite->getGeneratedId(), $this->suite->getOutputDir());
+    }
+
+    public function testGetCommands()
+    {
+        $expected = [
+            Command\SetupBuildCommand::class,
+            Command\DockerComposeUpCommand::class,
+            Command\DockerComposeRunCommand::class,
+            Command\DockerComposeRmCommand::class,
+            Command\MoveOutputCommand::class,
+            Command\CleanBuildCommand::class
+        ];
+        $this->assertEquals($expected, $this->suite->getCommands());
     }
 }
