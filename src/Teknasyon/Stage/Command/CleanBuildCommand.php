@@ -2,16 +2,16 @@
 
 namespace Teknasyon\Stage\Command;
 
-use Teknasyon\Stage\Suite\Suite;
+use Teknasyon\Stage\Job\Job;
 
 class CleanBuildCommand extends CommandAbstract implements Command
 {
-    public function run(Suite $suite)
+    public function run(Job $job)
     {
         $cmd = [
             'rm',
             '-rf',
-            $suite->getBuildDir()
+            $job->getBuildDir()
         ];
         $process = $this->commandExecutor->execute($cmd);
         if ($process->getExitCode() < 0) {

@@ -6,40 +6,40 @@ class SetupBuildCommandTest extends CommandTestAbstract
 {
     public function testRun()
     {
-        $suite = $this->getDockerComposeSuite();
+        $job = $this->getDockerComposeJob();
         $commandExecutor = $this->getCommandExecutor();
         $commandExecutor->expects($this->at(0))
             ->method('execute')
-            ->willReturnCallback(function ($args) use ($suite) {
+            ->willReturnCallback(function ($args) use ($job) {
                 $expected = [
                     'cp',
                     '-r',
                     '/sourcecode',
-                    $suite->getBuildDir()
+                    $job->getBuildDir()
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
             });
         $commandExecutor->expects($this->at(1))
             ->method('execute')
-            ->willReturnCallback(function ($args) use ($suite) {
+            ->willReturnCallback(function ($args) use ($job) {
                 $expected = [
                     'mkdir',
                     '-p',
-                    $suite->getBuildDir() . '/tmp/output',
-                    $suite->getOutputDir() . '/tmp/output',
-                    $suite->getBuildDir() . '/logs',
-                    $suite->getOutputDir() . '/logs'
+                    $job->getBuildDir() . '/tmp/output',
+                    $job->getOutputDir() . '/tmp/output',
+                    $job->getBuildDir() . '/logs',
+                    $job->getOutputDir() . '/logs'
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
             });
-        (new SetupBuildCommand($commandExecutor))->run($suite);
+        (new SetupBuildCommand($commandExecutor))->run($job);
     }
 
     public function testExitCode()
     {
-        $suite = $this->getDockerComposeSuite();
+        $job = $this->getDockerComposeJob();
         $commandExecutor = $this->getCommandExecutor();
         $commandExecutor->expects($this->at(0))
             ->method('execute')
@@ -47,12 +47,12 @@ class SetupBuildCommandTest extends CommandTestAbstract
                 return $this->generateProcessWithExitCode(-1);
             });
         $this->expectException(\Exception::class);
-        (new SetupBuildCommand($commandExecutor))->run($suite);
+        (new SetupBuildCommand($commandExecutor))->run($job);
     }
 
     public function testMultipleOutputDirSupport()
     {
-        $suite = $this->getDockerComposeSuite();
+        $job = $this->getDockerComposeJob();
         $commandExecutor = $this->getCommandExecutor();
         $commandExecutor->expects($this->at(0))
             ->method('execute')
@@ -61,18 +61,18 @@ class SetupBuildCommandTest extends CommandTestAbstract
             });
         $commandExecutor->expects($this->at(1))
             ->method('execute')
-            ->willReturnCallback(function ($args) use ($suite) {
+            ->willReturnCallback(function ($args) use ($job) {
                 $expected = [
                     'mkdir',
                     '-p',
-                    $suite->getBuildDir() . '/tmp/output',
-                    $suite->getOutputDir() . '/tmp/output',
-                    $suite->getBuildDir() . '/logs',
-                    $suite->getOutputDir() . '/logs'
+                    $job->getBuildDir() . '/tmp/output',
+                    $job->getOutputDir() . '/tmp/output',
+                    $job->getBuildDir() . '/logs',
+                    $job->getOutputDir() . '/logs'
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
             });
-        (new SetupBuildCommand($commandExecutor))->run($suite);
+        (new SetupBuildCommand($commandExecutor))->run($job);
     }
 }

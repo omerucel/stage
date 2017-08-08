@@ -2,12 +2,12 @@
 
 namespace Teknasyon\Stage\Command;
 
-use Teknasyon\Stage\Suite\Suite;
+use Teknasyon\Stage\Job\Job;
 
 interface Command
 {
     /**
-     * @param Suite $suite
+     * @param Job $job
      */
-    public function run(Suite $suite);
+    public function run(Job $job);
 }

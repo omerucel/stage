@@ -6,24 +6,24 @@ class DockerRunCommandTest extends CommandTestAbstract
 {
     public function testRun()
     {
-        $suite = $this->getDockerfileSuite();
+        $job = $this->getDockerfileJob();
         $commandExecutor = $this->getCommandExecutor();
         $commandExecutor->expects($this->at(0))
             ->method('execute')
-            ->willReturnCallback(function ($args) use ($suite) {
+            ->willReturnCallback(function ($args) use ($job) {
                 $expected = [
                     '/usr/local/bin/docker',
                     'run',
                     '--rm',
                     '--name',
-                    $suite->getGeneratedId(),
+                    $job->getGeneratedId(),
                     '-v',
-                    $suite->getBuildDir() . ':/app',
-                    $suite->getGeneratedId(),
+                    $job->getBuildDir() . ':/app',
+                    $job->getGeneratedId(),
                     'sh /app/test.sh'
                 ];
                 $this->assertEquals($expected, $args);
             });
-        (new DockerRunCommand($commandExecutor))->run($suite);
+        (new DockerRunCommand($commandExecutor))->run($job);
     }
 }

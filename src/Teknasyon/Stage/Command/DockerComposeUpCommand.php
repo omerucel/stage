@@ -2,18 +2,18 @@
 
 namespace Teknasyon\Stage\Command;
 
-use Teknasyon\Stage\Suite\Suite;
+use Teknasyon\Stage\Job\Job;
 
 class DockerComposeUpCommand extends CommandAbstract implements Command
 {
-    public function run(Suite $suite)
+    public function run(Job $job)
     {
         $args = [
-            $suite->environmentSetting->dockerComposeBin,
+            $job->environmentSetting->dockerComposeBin,
             '-p',
-            $suite->getGeneratedId(),
+            $job->getGeneratedId(),
             '-f',
-            $suite->getBuildDir() . '/' . $suite->suiteSetting->dockerComposeFile,
+            $job->getBuildDir() . '/' . $job->suiteSetting->dockerComposeFile,
             'up',
             '-d',
             '--build'

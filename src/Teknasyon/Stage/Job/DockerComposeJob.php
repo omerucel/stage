@@ -1,10 +1,10 @@
 <?php
 
-namespace Teknasyon\Stage\Suite;
+namespace Teknasyon\Stage\Job;
 
 use Teknasyon\Stage\Command;
 
-class DockerComposeSuite extends SuiteAbstract
+class DockerComposeJob extends JobAbstract
 {
     public function getCommands()
     {

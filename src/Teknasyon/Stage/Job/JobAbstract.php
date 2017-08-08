@@ -1,12 +1,12 @@
 <?php
 
-namespace Teknasyon\Stage\Suite;
+namespace Teknasyon\Stage\Job;
 
 use Psr\Container\ContainerInterface;
 use Teknasyon\Stage\EnvironmentSetting;
 use Teknasyon\Stage\SuiteSetting\SuiteSetting;
 
-abstract class SuiteAbstract implements Suite
+abstract class JobAbstract implements Job
 {
     /**
      * @var ContainerInterface

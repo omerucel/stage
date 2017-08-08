@@ -1,8 +1,8 @@
 <?php
 
-namespace Teknasyon\Stage\Suite;
+namespace Teknasyon\Stage\Job;
 
-interface Suite
+interface Job
 {
     /**
      * @return string

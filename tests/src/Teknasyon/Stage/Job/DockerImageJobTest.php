@@ -1,6 +1,6 @@
 <?php
 
-namespace Teknasyon\Stage\Suite;
+namespace Teknasyon\Stage\Job;
 
 use DI\ContainerBuilder;
 use PHPUnit\Framework\TestCase;
@@ -9,12 +9,12 @@ use Teknasyon\Stage\SuiteSetting\DockerImageSuiteSetting;
 use Teknasyon\Stage\SuiteSetting\SuiteSettingAbstract;
 use Teknasyon\Stage\Command;
 
-class DockerImageSuiteTest extends TestCase
+class DockerImageJobTest extends TestCase
 {
     /**
-     * @var DockerImageSuite
+     * @var DockerImageJob
      */
-    protected $suite;
+    protected $job;
 
     protected function setUp()
     {
@@ -25,27 +25,27 @@ class DockerImageSuiteTest extends TestCase
         $container = ContainerBuilder::buildDevContainer();
         $container->set(EnvironmentSetting::class, $environmentSetting);
         $suiteSetting = $this->getMockBuilder(DockerImageSuiteSetting::class)->disableOriginalConstructor()->getMock();
-        $this->suite = new DockerImageSuite($container, $suiteSetting);
+        $this->job = new DockerImageJob($container, $suiteSetting);
     }
 
     public function testParameters()
     {
-        $this->assertInstanceOf(SuiteSettingAbstract::class, $this->suite->suiteSetting);
+        $this->assertInstanceOf(SuiteSettingAbstract::class, $this->job->suiteSetting);
     }
 
     public function testGetGeneratedId()
     {
-        $this->assertEquals(32, strlen($this->suite->getGeneratedId()));
+        $this->assertEquals(32, strlen($this->job->getGeneratedId()));
     }
 
     public function testGetBuildDir()
     {
-        $this->assertEquals('/builds/' . $this->suite->getGeneratedId(), $this->suite->getBuildDir());
+        $this->assertEquals('/builds/' . $this->job->getGeneratedId(), $this->job->getBuildDir());
     }
 
     public function testGetOutputDir()
     {
-        $this->assertEquals('/outputs/' . $this->suite->getGeneratedId(), $this->suite->getOutputDir());
+        $this->assertEquals('/outputs/' . $this->job->getGeneratedId(), $this->job->getOutputDir());
     }
 
     public function testGetCommands()
@@ -56,6 +56,6 @@ class DockerImageSuiteTest extends TestCase
             Command\MoveOutputCommand::class,
             Command\CleanBuildCommand::class
         ];
-        $this->assertEquals($expected, $this->suite->getCommands());
+        $this->assertEquals($expected, $this->job->getCommands());
     }
 }

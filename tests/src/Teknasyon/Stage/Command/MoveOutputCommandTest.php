@@ -6,38 +6,38 @@ class MoveOutputCommandTest extends CommandTestAbstract
 {
     public function testRun()
     {
-        $suite = $this->getDockerComposeSuite();
+        $job = $this->getDockerComposeJob();
         $commandExecutor = $this->getCommandExecutor();
         $commandExecutor->expects($this->at(0))
             ->method('execute')
-            ->willReturnCallback(function ($args) use ($suite) {
+            ->willReturnCallback(function ($args) use ($job) {
                 $expected = [
                     'cp',
                     '-r',
-                    $suite->getBuildDir() . '/tmp/output',
-                    $suite->getOutputDir() . '/tmp'
+                    $job->getBuildDir() . '/tmp/output',
+                    $job->getOutputDir() . '/tmp'
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
             });
         $commandExecutor->expects($this->at(1))
             ->method('execute')
-            ->willReturnCallback(function ($args) use ($suite) {
+            ->willReturnCallback(function ($args) use ($job) {
                 $expected = [
                     'cp',
                     '-r',
-                    $suite->getBuildDir() . '/logs',
-                    $suite->getOutputDir()
+                    $job->getBuildDir() . '/logs',
+                    $job->getOutputDir()
                 ];
                 $this->assertEquals($expected, $args);
                 return $this->generateProcessWithExitCode(0);
             });
-        (new MoveOutputCommand($commandExecutor))->run($suite);
+        (new MoveOutputCommand($commandExecutor))->run($job);
     }
 
     public function testExitCode()
     {
-        $suite = $this->getDockerComposeSuite();
+        $job = $this->getDockerComposeJob();
         $commandExecutor = $this->getCommandExecutor();
         $commandExecutor->expects($this->at(0))
             ->method('execute')
@@ -45,6 +45,6 @@ class MoveOutputCommandTest extends CommandTestAbstract
                 return $this->generateProcessWithExitCode(-1);
             });
         $this->expectException(\Exception::class);
-        (new MoveOutputCommand($commandExecutor))->run($suite);
+        (new MoveOutputCommand($commandExecutor))->run($job);
     }
 }

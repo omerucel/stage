@@ -7,9 +7,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\Process;
 use Teknasyon\Stage\CommandExecutor;
 use Teknasyon\Stage\EnvironmentSetting;
-use Teknasyon\Stage\Suite\DockerComposeSuite;
-use Teknasyon\Stage\Suite\DockerfileSuite;
-use Teknasyon\Stage\Suite\DockerImageSuite;
+use Teknasyon\Stage\Job\DockerComposeJob;
+use Teknasyon\Stage\Job\DockerfileJob;
+use Teknasyon\Stage\Job\DockerImageJob;
 use Teknasyon\Stage\SuiteSetting\DockerComposeSuiteSetting;
 use Teknasyon\Stage\SuiteSetting\DockerfileSuiteSetting;
 use Teknasyon\Stage\SuiteSetting\DockerImageSuiteSetting;
@@ -40,9 +40,9 @@ abstract class CommandTestAbstract extends TestCase
     }
 
     /**
-     * @return DockerComposeSuite
+     * @return DockerComposeJob
      */
-    protected function getDockerComposeSuite()
+    protected function getDockerComposeJob()
     {
         $suiteSetting = new DockerComposeSuiteSetting('suitename', [
             'type' => 'DockerCompose',
@@ -52,13 +52,13 @@ abstract class CommandTestAbstract extends TestCase
             'command' => 'sh /data/project/test.sh',
             'output_dir' => ['tmp/output', 'logs']
         ]);
-        return new DockerComposeSuite($this->getContainer(), $suiteSetting);
+        return new DockerComposeJob($this->getContainer(), $suiteSetting);
     }
 
     /**
-     * @return DockerfileSuite
+     * @return DockerfileJob
      */
-    protected function getDockerfileSuite()
+    protected function getDockerfileJob()
     {
         $suiteSetting = new DockerfileSuiteSetting('suitename', [
             'type' => 'Dockerfile',
@@ -68,13 +68,13 @@ abstract class CommandTestAbstract extends TestCase
             'command' => 'sh /app/test.sh',
             'output_dir' => ['tmp/output', 'logs']
         ]);
-        return new DockerfileSuite($this->getContainer(), $suiteSetting);
+        return new DockerfileJob($this->getContainer(), $suiteSetting);
     }
 
     /**
-     * @return DockerImageSuite
+     * @return DockerImageJob
      */
-    protected function getDockerImageSuite()
+    protected function getDockerImageJob()
     {
         $suiteSetting = new DockerImageSuiteSetting('suitename', [
             'type' => 'Dockerfile',
@@ -84,7 +84,7 @@ abstract class CommandTestAbstract extends TestCase
             'command' => 'sh /app/test.sh',
             'output_dir' => ['tmp/output', 'logs']
         ]);
-        return new DockerImageSuite($this->getContainer(), $suiteSetting);
+        return new DockerImageJob($this->getContainer(), $suiteSetting);
     }
 
     /**

@@ -2,18 +2,18 @@
 
 namespace Teknasyon\Stage\Command;
 
-use Teknasyon\Stage\Suite\Suite;
+use Teknasyon\Stage\Job\Job;
 
 class DockerComposeRmCommand extends CommandAbstract implements Command
 {
-    public function run(Suite $suite)
+    public function run(Job $job)
     {
         $cmd = [
-            $suite->environmentSetting->dockerComposeBin,
+            $job->environmentSetting->dockerComposeBin,
             '-p',
-            $suite->getGeneratedId(),
+            $job->getGeneratedId(),
             '-f',
-            $suite->getBuildDir() . '/' . $suite->suiteSetting->dockerComposeFile,
+            $job->getBuildDir() . '/' . $job->suiteSetting->dockerComposeFile,
             'rm',
             '--force',
             '--stop'

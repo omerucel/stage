@@ -2,20 +2,20 @@
 
 namespace Teknasyon\Stage\Command;
 
-use Teknasyon\Stage\Suite\Suite;
+use Teknasyon\Stage\Job\Job;
 
 class DockerBuildCommand extends CommandAbstract implements Command
 {
-    public function run(Suite $suite)
+    public function run(Job $job)
     {
         $cmd = [
-            $suite->environmentSetting->dockerBin,
+            $job->environmentSetting->dockerBin,
             'build',
             '-f',
-            $suite->getBuildDir() . '/' . $suite->suiteSetting->dockerfile,
+            $job->getBuildDir() . '/' . $job->suiteSetting->dockerfile,
             '-t',
-            $suite->getGeneratedId(),
-            dirname($suite->getBuildDir() . '/' . $suite->suiteSetting->dockerfile)
+            $job->getGeneratedId(),
+            dirname($job->getBuildDir() . '/' . $job->suiteSetting->dockerfile)
         ];
         $this->commandExecutor->execute($cmd);
     }

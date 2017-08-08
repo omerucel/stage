@@ -2,21 +2,21 @@
 
 namespace Teknasyon\Stage\Command;
 
-use Teknasyon\Stage\Suite\Suite;
+use Teknasyon\Stage\Job\Job;
 
 class SetupBuildCommand extends CommandAbstract implements Command
 {
     /**
-     * @param Suite $suite
+     * @param Job $job
      * @throws \Exception
      */
-    public function run(Suite $suite)
+    public function run(Job $job)
     {
         $cmd = [
             'cp',
             '-r',
-            $suite->suiteSetting->sourceCodeDir,
-            $suite->getBuildDir()
+            $job->suiteSetting->sourceCodeDir,
+            $job->getBuildDir()
         ];
         $process = $this->commandExecutor->execute($cmd);
         if ($process->getExitCode() < 0) {
@@ -26,9 +26,9 @@ class SetupBuildCommand extends CommandAbstract implements Command
             'mkdir',
             '-p'
         ];
-        foreach ($suite->suiteSetting->outputDir as $outputDir) {
-            $cmd[] = $suite->getBuildDir() . '/' . $outputDir;
-            $cmd[] = $suite->getOutputDir() . '/' . $outputDir;
+        foreach ($job->suiteSetting->outputDir as $outputDir) {
+            $cmd[] = $job->getBuildDir() . '/' . $outputDir;
+            $cmd[] = $job->getOutputDir() . '/' . $outputDir;
         }
         $process = $this->commandExecutor->execute($cmd);
         if ($process->getExitCode() < 0) {

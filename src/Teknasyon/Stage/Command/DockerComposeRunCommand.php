@@ -2,21 +2,21 @@
 
 namespace Teknasyon\Stage\Command;
 
-use Teknasyon\Stage\Suite\Suite;
+use Teknasyon\Stage\Job\Job;
 
 class DockerComposeRunCommand extends CommandAbstract implements Command
 {
-    public function run(Suite $suite)
+    public function run(Job $job)
     {
         $cmd = [
-            $suite->environmentSetting->dockerComposeBin,
+            $job->environmentSetting->dockerComposeBin,
             '-p',
-            $suite->getGeneratedId(),
+            $job->getGeneratedId(),
             '-f',
-            $suite->getBuildDir() . '/' . $suite->suiteSetting->dockerComposeFile,
+            $job->getBuildDir() . '/' . $job->suiteSetting->dockerComposeFile,
             'run',
-            $suite->suiteSetting->serviceName,
-            $suite->suiteSetting->command
+            $job->suiteSetting->serviceName,
+            $job->suiteSetting->command
         ];
         $process = $this->commandExecutor->execute($cmd);
         if ($process->getExitCode() < 0) {

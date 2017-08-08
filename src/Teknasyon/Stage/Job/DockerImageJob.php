@@ -1,18 +1,16 @@
 <?php
 
-namespace Teknasyon\Stage\Suite;
+namespace Teknasyon\Stage\Job;
 
 use Teknasyon\Stage\Command;
 
-class DockerfileSuite extends SuiteAbstract
+class DockerImageJob extends JobAbstract
 {
     public function getCommands()
     {
         return [
             Command\SetupBuildCommand::class,
-            Command\DockerBuildCommand::class,
-            Command\DockerRunCommand::class,
-            Command\DockerStopCommand::class,
+            Command\DockerRunImageCommand::class,
             Command\MoveOutputCommand::class,
             Command\CleanBuildCommand::class
         ];

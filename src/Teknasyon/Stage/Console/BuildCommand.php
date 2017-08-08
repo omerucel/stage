@@ -12,7 +12,7 @@ use Teknasyon\Stage\CommandExecutor;
 use Teknasyon\Stage\EnvironmentSetting;
 use Teknasyon\Stage\EnvironmentSettingParser;
 use Teknasyon\Stage\Factory\ContainerFactory;
-use Teknasyon\Stage\SuiteFactory;
+use Teknasyon\Stage\JobFactory;
 use Teknasyon\Stage\SuiteSetting\SuiteSetting;
 use Teknasyon\Stage\SuiteSettingParser;
 
@@ -85,10 +85,10 @@ class BuildCommand extends Command
         /**
          * @var \Teknasyon\Stage\Command\Command $command
          */
-        $suite = SuiteFactory::factory($container, $suiteSetting);
-        foreach ($suite->getCommands() as $commandClass) {
+        $job = JobFactory::factory($container, $suiteSetting);
+        foreach ($job->getCommands() as $commandClass) {
             $command = $container->get($commandClass);
-            $command->run($suite);
+            $command->run($job);
         }
     }
 }

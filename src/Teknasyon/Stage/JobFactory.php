@@ -3,20 +3,20 @@
 namespace Teknasyon\Stage;
 
 use Psr\Container\ContainerInterface;
-use Teknasyon\Stage\Suite\Suite;
+use Teknasyon\Stage\Job\Job;
 use Teknasyon\Stage\SuiteSetting\SuiteSetting;
 
-class SuiteFactory
+class JobFactory
 {
     /**
      * @param ContainerInterface $container
      * @param SuiteSetting $suiteSetting
-     * @return Suite
+     * @return Job
      */
     public static function factory(ContainerInterface $container, SuiteSetting $suiteSetting)
     {
         $suiteSettingClassName = get_class($suiteSetting);
-        $className = str_replace('SuiteSetting', 'Suite', $suiteSettingClassName);
+        $className = str_replace('SuiteSetting', 'Job', $suiteSettingClassName);
         return new $className($container, $suiteSetting);
     }
 }
