@@ -2,6 +2,8 @@
 
 namespace Teknasyon\Stage\Command;
 
+use Teknasyon\Stage\Event\CmdExecuteEvent;
+use Teknasyon\Stage\Event\ProcessOutputEvent;
 use Teknasyon\Stage\Job\Job;
 
 class DockerComposeRunCommand extends CommandAbstract implements Command
@@ -18,7 +20,12 @@ class DockerComposeRunCommand extends CommandAbstract implements Command
             $job->suiteSetting->serviceName,
             $job->suiteSetting->command
         ];
-        $process = $this->commandExecutor->execute($cmd);
+        $event = new CmdExecuteEvent($cmd, $job);
+        $this->eventDispatcher->dispatch($event::NAME, $event);
+        $process = $this->commandExecutor->execute($cmd, function ($type, $buffer) use ($job) {
+            $event = new ProcessOutputEvent($type, $buffer, $job);
+            $this->eventDispatcher->dispatch($event::NAME, $event);
+        });;
         if ($process->getExitCode() < 0) {
             throw new \Exception();
         }

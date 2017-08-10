@@ -2,6 +2,7 @@
 
 namespace Teknasyon\Stage\Command;
 
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Teknasyon\Stage\CommandExecutor;
 
 abstract class CommandAbstract
@@ -12,10 +13,17 @@ abstract class CommandAbstract
     protected $commandExecutor;
 
     /**
-     * @param CommandExecutor $commandExecutor
+     * @var EventDispatcher
      */
-    public function __construct(CommandExecutor $commandExecutor)
+    protected $eventDispatcher;
+
+    /**
+     * @param CommandExecutor $commandExecutor
+     * @param EventDispatcher $eventDispatcher
+     */
+    public function __construct(CommandExecutor $commandExecutor, EventDispatcher $eventDispatcher)
     {
         $this->commandExecutor = $commandExecutor;
+        $this->eventDispatcher = $eventDispatcher;
     }
 }

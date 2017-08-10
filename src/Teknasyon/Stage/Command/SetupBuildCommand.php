@@ -2,6 +2,8 @@
 
 namespace Teknasyon\Stage\Command;
 
+use Teknasyon\Stage\Event\CmdExecuteEvent;
+use Teknasyon\Stage\Event\ProcessOutputEvent;
 use Teknasyon\Stage\Job\Job;
 
 class SetupBuildCommand extends CommandAbstract implements Command
@@ -18,7 +20,12 @@ class SetupBuildCommand extends CommandAbstract implements Command
             $job->suiteSetting->sourceCodeDir,
             $job->getBuildDir()
         ];
-        $process = $this->commandExecutor->execute($cmd);
+        $event = new CmdExecuteEvent($cmd, $job);
+        $this->eventDispatcher->dispatch($event::NAME, $event);
+        $process = $this->commandExecutor->execute($cmd, function ($type, $buffer) use ($job) {
+            $event = new ProcessOutputEvent($type , $buffer, $job);
+            $this->eventDispatcher->dispatch($event::NAME, $event);
+        });
         if ($process->getExitCode() < 0) {
             throw new \Exception();
         }
@@ -30,7 +37,10 @@ class SetupBuildCommand extends CommandAbstract implements Command
             $cmd[] = $job->getBuildDir() . '/' . $outputDir;
             $cmd[] = $job->getOutputDir() . '/' . $outputDir;
         }
-        $process = $this->commandExecutor->execute($cmd);
+        $process = $this->commandExecutor->execute($cmd, function ($type, $buffer) use ($job) {
+            $event = new ProcessOutputEvent($type, $buffer, $job);
+            $this->eventDispatcher->dispatch($event::NAME, $event);
+        });
         if ($process->getExitCode() < 0) {
             throw new \Exception();
         }

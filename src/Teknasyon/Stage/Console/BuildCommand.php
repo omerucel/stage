@@ -7,10 +7,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
 use Teknasyon\Stage\CommandExecutor;
-use Teknasyon\Stage\EnvironmentSetting;
-use Teknasyon\Stage\EnvironmentSettingParser;
+use Teknasyon\Stage\DummyCommandExecutor;
 use Teknasyon\Stage\Factory\ContainerFactory;
 use Teknasyon\Stage\JobFactory;
 use Teknasyon\Stage\SuiteSetting\SuiteSetting;
@@ -30,22 +28,10 @@ class BuildCommand extends Command
     {
         $environmentFilePath = $this->getValidatedEnvironmentFile($input);
         $projectDir = $this->getValidatedProjectDir($input);
+        $container = ContainerFactory::factory($environmentFilePath);
         if ($input->getOption('dry') == true) {
-            $commandExecutor = new class extends CommandExecutor {
-                public function execute(array $args = [])
-                {
-                    echo implode(' ', $args) . PHP_EOL;
-                    $process = new Process($args);
-                    return $process;
-                }
-            };
-        } else {
-            $commandExecutor = new CommandExecutor();
+            $container->set(CommandExecutor::class, \DI\object(DummyCommandExecutor::class));
         }
-        $environmentSetting = EnvironmentSettingParser::parse($environmentFilePath);
-        $container = ContainerFactory::factory();
-        $container->set(EnvironmentSetting::class, $environmentSetting);
-        $container->set(CommandExecutor::class, $commandExecutor);
         $suiteSettings = SuiteSettingParser::parse($projectDir . '/stage.yml');
         foreach ($suiteSettings as $suiteSetting) {
             $this->runSuite($container, $suiteSetting);

@@ -2,6 +2,8 @@
 
 namespace Teknasyon\Stage\Command;
 
+use Teknasyon\Stage\Event\CmdExecuteEvent;
+use Teknasyon\Stage\Event\ProcessOutputEvent;
 use Teknasyon\Stage\Job\Job;
 
 class DockerBuildCommand extends CommandAbstract implements Command
@@ -17,6 +19,11 @@ class DockerBuildCommand extends CommandAbstract implements Command
             $job->getGeneratedId(),
             dirname($job->getBuildDir() . '/' . $job->suiteSetting->dockerfile)
         ];
-        $this->commandExecutor->execute($cmd);
+        $event = new CmdExecuteEvent($cmd, $job);
+        $this->eventDispatcher->dispatch($event::NAME, $event);
+        $this->commandExecutor->execute($cmd, function ($type, $buffer) use ($job) {
+            $event = new ProcessOutputEvent($type, $buffer, $job);
+            $this->eventDispatcher->dispatch($event::NAME, $event);
+        });
     }
 }

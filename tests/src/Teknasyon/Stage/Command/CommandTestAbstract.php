@@ -4,6 +4,7 @@ namespace Teknasyon\Stage\Command;
 
 use DI\ContainerBuilder;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Process\Process;
 use Teknasyon\Stage\CommandExecutor;
 use Teknasyon\Stage\EnvironmentSetting;
@@ -37,6 +38,14 @@ abstract class CommandTestAbstract extends TestCase
     protected function getCommandExecutor()
     {
         return $this->getMockBuilder(CommandExecutor::class)->getMock();
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected function getEventDispatcher()
+    {
+        return $this->getMockBuilder(EventDispatcher::class)->getMock();
     }
 
     /**

@@ -2,13 +2,15 @@
 
 namespace Teknasyon\Stage\Command;
 
+use Teknasyon\Stage\Event\CmdExecuteEvent;
+use Teknasyon\Stage\Event\ProcessOutputEvent;
 use Teknasyon\Stage\Job\Job;
 
 class DockerComposeUpCommand extends CommandAbstract implements Command
 {
     public function run(Job $job)
     {
-        $args = [
+        $cmd = [
             $job->environmentSetting->dockerComposeBin,
             '-p',
             $job->getGeneratedId(),
@@ -18,7 +20,12 @@ class DockerComposeUpCommand extends CommandAbstract implements Command
             '-d',
             '--build'
         ];
-        $process = $this->commandExecutor->execute($args);
+        $event = new CmdExecuteEvent($cmd, $job);
+        $this->eventDispatcher->dispatch($event::NAME, $event);
+        $process = $this->commandExecutor->execute($cmd, function ($type, $buffer) use ($job) {
+            $event = new ProcessOutputEvent($type, $buffer, $job);
+            $this->eventDispatcher->dispatch($event::NAME, $event);
+        });
         if ($process->getExitCode() < 0) {
             throw new \Exception();
         }
