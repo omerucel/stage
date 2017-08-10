@@ -7,8 +7,11 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Teknasyon\Stage\CommandExecutor;
 use Teknasyon\Stage\DummyCommandExecutor;
+use Teknasyon\Stage\Event\JobCompletedEvent;
+use Teknasyon\Stage\Event\JobStartedEvent;
 use Teknasyon\Stage\Factory\ContainerFactory;
 use Teknasyon\Stage\JobFactory;
 use Teknasyon\Stage\SuiteSetting\SuiteSetting;
@@ -70,11 +73,17 @@ class BuildCommand extends Command
     {
         /**
          * @var \Teknasyon\Stage\Command\Command $command
+         * @var EventDispatcher $eventDispatcher
          */
         $job = JobFactory::factory($container, $suiteSetting);
+        $eventDispatcher = $container->get(EventDispatcher::class);
+        $jobStarted = new JobStartedEvent($job);
+        $eventDispatcher->dispatch($jobStarted::NAME, $jobStarted);
         foreach ($job->getCommands() as $commandClass) {
             $command = $container->get($commandClass);
             $command->run($job);
         }
+        $jobCompleted = new JobCompletedEvent($job);
+        $eventDispatcher->dispatch($jobCompleted::NAME, $jobCompleted);
     }
 }
