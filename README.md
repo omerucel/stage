@@ -4,13 +4,30 @@ Docker destekli [Continuous Testing](https://continuousdelivery.com/foundations/
 
 # Kullanımı
 
-İlgili projenin kök dizininde **stage.yml** isimli dosya oluşturulmalı.
+Ortam ayarları ve proje ayarları için iki adet yaml dosyasına ihtiyaç var. Ortam ayarları dosyası testlerin çalışacağı 
+sunucuda oluşturulmalı. Örnek ayar dosyası:
 
+```yaml
+builds_dir: /builds
+output_dir: /outputs
+docker_compose_bin: /usr/local/bin/docker-compose
+docker_bin: /usr/local/bin/docker
+notification:
+    slack:
+        webhook_url: https://hooks.slack.com/services/X/Y/Z
+        username: stage
+        icon_emoji: ":rocket:"
+```
+
+Proje ayarları dosyası ise ilgili projenin kök dizininde **stage.yml** ismi ile oluşturulmalı. Örnek proje ayar dosyası:
 ```yaml
 default:
     output_dir:
         - var/output
         - var/logs
+    notification:
+        slack:
+            channel_name: "#stage-ci-test"
 
 dockerfile:
     type: DockerFile
@@ -34,19 +51,14 @@ dockerimage:
 Ardından konsol komutu aşağıdaki şekilde çalıştırılmalı:
 
 ```bash
-$ php bin/stage.php build --docker-compose-bin="/usr/local/bin/docker-compose" \
---docker-bin="/usr/local/bin/docker" \
---builds-dir="/Users/omerucel/Downloads/builds" \
---outputs-dir="/Users/omerucel/Downloads/outputs" \
+$ php bin/stage.php build \
+--environment-file="/Users/omerucel/Data/Dev/Projects/test-project/environment.yml" \
 --project-dir="/Users/omerucel/Data/Dev/Projects/test-project" \
 --dry
 ```
 
-Bu komutun şu parametreleri alır:
-* --docker-bin: docker çalıştırılabilir dosyasının bulunduğu konum.
-* --docker-compose-bin: docker-compose çalıştırılabilir dosyasının bulunduğu konum.
-* --builds-dir: Proje dizini belirtilen konuma geçici olarak kopyalanır. Her bir projenin geçici dizin adı farklıdır ve otomatik olarak tanımlanır.
-* --outputs-dir: Test çıktılarının kopyalanacağı konum. Her bir projenin geçici dizin adı farklıdır ve otomatik olarak tanımlanır.
+Bu komut şu parametreleri alır:
+* --environment-file: Sunucu ortamı ayar dosyası.
 * --project-dir: Projenin kaynak kodlarının bulunduğu dizin.
 * --dry: Yapılacak işlemlerin çıktısını ekrana yazar.
 

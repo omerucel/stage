@@ -14,5 +14,6 @@ class EnvironmentSettingParserTest extends TestCase
         $this->assertEquals('/usr/local/bin/docker', $environmentSetting->dockerBin);
         $this->assertEquals('/outputs', $environmentSetting->outputDir);
         $this->assertEquals('/builds', $environmentSetting->buildsDir);
+        $this->assertEquals(['slack' => ['webhook_url' => 'http://slack.com']], $environmentSetting->notification);
     }
 }

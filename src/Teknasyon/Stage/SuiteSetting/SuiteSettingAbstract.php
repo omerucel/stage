@@ -8,6 +8,7 @@ abstract class SuiteSettingAbstract implements SuiteSetting
     public $outputDir;
     public $command;
     public $sourceCodeDir;
+    public $notificationSettings = [];
 
     /**
      * @param $name
@@ -22,5 +23,8 @@ abstract class SuiteSettingAbstract implements SuiteSetting
         }
         $this->command = $settings['command'] ?? null;
         $this->sourceCodeDir = $settings['source_code_dir'] ?? null;
+        if (is_array($settings['notification'])) {
+            $this->notificationSettings = $settings['notification'];
+        }
     }
 }

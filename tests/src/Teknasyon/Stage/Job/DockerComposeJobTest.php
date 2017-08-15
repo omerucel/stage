@@ -7,16 +7,10 @@ use PHPUnit\Framework\TestCase;
 use Teknasyon\Stage\Command;
 use Teknasyon\Stage\EnvironmentSetting;
 use Teknasyon\Stage\SuiteSetting\DockerComposeSuiteSetting;
-use Teknasyon\Stage\SuiteSetting\SuiteSettingAbstract;
 
 class DockerComposeJobTest extends TestCase
 {
-    /**
-     * @var DockerComposeJob
-     */
-    protected $job;
-
-    protected function setUp()
+    public function testGetCommands()
     {
         $environmentSetting = new EnvironmentSetting([
             'builds_dir' => '/builds',
@@ -24,32 +18,8 @@ class DockerComposeJobTest extends TestCase
         ]);
         $container = ContainerBuilder::buildDevContainer();
         $container->set(EnvironmentSetting::class, $environmentSetting);
-        $suiteSetting = $this->getMockBuilder(DockerComposeSuiteSetting::class)->disableOriginalConstructor()->getMock();
-        $this->job = new DockerComposeJob($container, $suiteSetting);
-    }
-
-    public function testParameters()
-    {
-        $this->assertInstanceOf(SuiteSettingAbstract::class, $this->job->suiteSetting);
-    }
-
-    public function testGetGeneratedId()
-    {
-        $this->assertEquals(32, strlen($this->job->getGeneratedId()));
-    }
-
-    public function testGetBuildDir()
-    {
-        $this->assertEquals('/builds/' . $this->job->getGeneratedId(), $this->job->getBuildDir());
-    }
-
-    public function testGetOutputDir()
-    {
-        $this->assertEquals('/outputs/' . $this->job->getGeneratedId(), $this->job->getOutputDir());
-    }
-
-    public function testGetCommands()
-    {
+        $suiteSetting = new DockerComposeSuiteSetting('suitename', []);
+        $job = new DockerComposeJob($container, $suiteSetting);
         $expected = [
             Command\SetupBuildCommand::class,
             Command\DockerComposeUpCommand::class,
@@ -58,6 +28,6 @@ class DockerComposeJobTest extends TestCase
             Command\MoveOutputCommand::class,
             Command\CleanBuildCommand::class
         ];
-        $this->assertEquals($expected, $this->job->getCommands());
+        $this->assertEquals($expected, $job->getCommands());
     }
 }

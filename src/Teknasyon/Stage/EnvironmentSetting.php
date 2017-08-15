@@ -8,6 +8,7 @@ class EnvironmentSetting
     public $dockerBin;
     public $buildsDir;
     public $outputDir;
+    public $notification;
 
     /**
      * @param array $settings
@@ -18,5 +19,6 @@ class EnvironmentSetting
         $this->dockerBin = $settings['docker_bin'] ?? null;
         $this->buildsDir = $settings['builds_dir'] ?? null;
         $this->outputDir = $settings['output_dir'] ?? null;
+        $this->notification = $settings['notification'] ?? [];
     }
 }

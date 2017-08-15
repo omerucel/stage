@@ -12,12 +12,18 @@ class EnvironmentSettingTest extends TestCase
             'docker_compose_bin' => '/usr/local/bin/docker-compose',
             'docker_bin' => '/usr/local/bin/docker',
             'builds_dir' => '/data/builds',
-            'output_dir' => '/data/outputs'
+            'output_dir' => '/data/outputs',
+            'notification' => [
+                'slack' => [
+                    'webhook_url' => 'http://slack.com'
+                ]
+            ]
         ];
         $environmentSetting = new EnvironmentSetting($settings);
-        $this->assertEquals($environmentSetting->dockerComposeBin, $settings['docker_compose_bin']);
-        $this->assertEquals($environmentSetting->dockerBin, $settings['docker_bin']);
-        $this->assertEquals($environmentSetting->buildsDir, $settings['builds_dir']);
-        $this->assertEquals($environmentSetting->outputDir, $settings['output_dir']);
+        $this->assertEquals($settings['docker_compose_bin'], $environmentSetting->dockerComposeBin);
+        $this->assertEquals($settings['docker_bin'], $environmentSetting->dockerBin);
+        $this->assertEquals($settings['builds_dir'], $environmentSetting->buildsDir);
+        $this->assertEquals($settings['output_dir'], $environmentSetting->outputDir);
+        $this->assertEquals($settings['notification'], $environmentSetting->notification);
     }
 }

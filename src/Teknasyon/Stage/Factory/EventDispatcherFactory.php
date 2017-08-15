@@ -5,6 +5,7 @@ namespace Teknasyon\Stage\Factory;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Teknasyon\Stage\Event\Subscriber\BuildLogSubscriber;
+use Teknasyon\Stage\Event\Subscriber\NotificationSubscriber;
 
 class EventDispatcherFactory
 {
@@ -16,6 +17,7 @@ class EventDispatcherFactory
     {
         $eventDispatcher = new EventDispatcher();
         $eventDispatcher->addSubscriber($container->get(BuildLogSubscriber::class));
+        $eventDispatcher->addSubscriber($container->get(NotificationSubscriber::class));
         return $eventDispatcher;
     }
 }
